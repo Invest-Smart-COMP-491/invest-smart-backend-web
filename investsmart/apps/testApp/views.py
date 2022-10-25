@@ -30,30 +30,16 @@ firebase = pyrebase.initialize_app(config)
 #firebase = pyrebase.get_app(config)
 db = firebase.database()
 
-# Defining a function which
-# will receive request and
-# perform task depending
-# upon function definition
-def hello_world (request) :
-	# This will return Hello Geeks
-	# string as HttpResponse
-	return HttpResponse("Hello World")
 
-def home(request):
-	data = {"name": "Firebase Test"}
-	db.child("users").child("Morty").set(data)  # push
-	userName = db.child("users").get().val()["Morty"]["name"]  # get
 
-	return render(request, "Home.html", {"projectname": userName})
-
-class TestHome(View):
-	templatename = "Prod/Home.html"
+class TestLayout(View):
+	templatename = "TestPanel/Test.html"
 
 	def get(self,request,*args,**kwargs):
 		data = {"name": "Firebase Test"}
 		db.child("users").child("Morty").set(data)  # push
 		userName = db.child("users").get().val()["Morty"]["name"]  # get
-		return render(request, self.templatename, {"projectname": userName})
+		return render(request, self.templatename, {"projectname": "userName"})
 
 	def post(self, request, *args, **kwargs):
 		return HttpResponse("I have done it")
