@@ -1,0 +1,4 @@
+==> 2022-10-25 22:19:09 <==
+# cmd: /Users/metehangelgi/opt/anaconda3/bin/conda create --prefix /Users/metehangelgi/Desktop/invest-smart-backend/investsmart-env python=3.9
+# conda version: 22.9.0
+# update specs: ['python=3.9']

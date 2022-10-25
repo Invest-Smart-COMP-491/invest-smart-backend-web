@@ -54,7 +54,7 @@ ROOT_URLCONF = "investsmart.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": ["templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -73,6 +73,7 @@ WSGI_APPLICATION = "investsmart.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
+# TODO:  database buraya taşınmalı; firebase doğrudan desteklenmiyor
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
