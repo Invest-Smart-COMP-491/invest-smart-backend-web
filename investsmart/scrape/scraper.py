@@ -3,7 +3,7 @@ import pandas as pd
 import yfinance as yf
 
 
-from investsmart.scrape.constants import STOCKS_LIST
+from investsmart.scrape.constants import STOCK_TICKERS_LIST
 
 
 class LivePrice:
@@ -30,7 +30,7 @@ class DBUpdater():
         pass
 
     def updateAllLastPrices(self):
-        map(self.updateLastPrice, STOCKS_LIST)
+        map(self.updateLastPrice, STOCK_TICKERS_LIST)
 
         """for st in STOCKS_LIST:
             lp = LivePrice(st)
@@ -43,7 +43,7 @@ class DBUpdater():
         db.update(ticker, last_price)
 
     def updateAllAnalystTargets(self):
-        map(self.updateAnalystTargets, STOCKS_LIST)
+        map(self.updateAnalystTargets, STOCK_TICKERS_LIST)
 
     def updateAnalystTargets(self, ticker):
         lp = LivePrice(ticker)

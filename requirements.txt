@@ -1,3 +1,6 @@
 django==4.1.2
 pyrebase
 numpy==1.21.5
+pandas
+yfinance
+sklearn
