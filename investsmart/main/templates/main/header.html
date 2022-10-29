@@ -2,6 +2,7 @@
   {% load static %}
   <!-- Prism CSS -->
   <link href="{% static 'tinymce/css/prism.css' %}" rel="stylesheet">
+  <script src="{% static 'tinymce/js/prism.js' %}" ></script>
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -38,35 +39,20 @@
   <li><a href="#">Services</a></li>
   <li><a href="#">About</a></li>
   <li><a href="#">Blog</a></li>
-  <li class="divider"></li>
   <li><a href="#">Contact</a></li>
+  <li class="divider"></li>
+  <li><a href="/logout">Logout</a></li>
 </ul>
 
 <body>
 
-<nav>
-  <div class="nav-wrapper">
-    <a href="/" class="brand-logo">Logo</a>
+  {% include "main/includes/navbar.html" %}
+  {% include "main/includes/messages.html" %}
 
-    <ul class="right hide-on-med-and-down">
-      <li>      
-        <form>
-          <div class="input-field">
-            <input id="search" type="search" required>
-            <label class="label-icon" for="search">Search<i class="material-icons left">search</i></label>
-            <i class="material-icons">close</i>
-          </div>
-        </form>
-      </li>
-      <li><a href="/register">Register</a></li>
-      <li><a href="/login">Login</a></li>
-      <!-- Dropdown Trigger -->
-      <li><a class="dropdown-trigger" data-target="dropdown1">Menu<i class="material-icons right">arrow_drop_down</i></a></li>
-    </ul>
+  <div class="container">
+    <br>
+    {% block content %}
+    {% endblock %}
   </div>
-</nav>
-
-{% block content %}
-{% endblock %}
-
+  <br>
 </body>
