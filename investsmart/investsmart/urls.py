@@ -15,17 +15,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
-from . import views
-from apps.testApp import views as views2
 
 urlpatterns = [
-    path("",views.TestHome.as_view(),name="TestHome"),
-
     path("admin/", admin.site.urls),
-    path('hello/', views.hello_world),
-    path("", include('apps.testApp.urls'))
-    #path("test/",views2.TestLayout.as_view(),name="TestLayout"),
+    path('',include('main.urls')),
+    path('tinymce/',include('tinymce.urls'))
 ]
-
-# admin.site.site_header = 'TEST HEADER'
-# admin.site.site_url = '/metehan'
