@@ -1,27 +1,39 @@
+
+<!-- Dropdown Structure -->
+<ul id="dropdown1" class="dropdown-content">
+  <li><a href="#">Who are we</a></li>
+  <li><a href="#">Services</a></li>
+  <li><a href="#">About</a></li>
+  <li><a href="#">Blog</a></li>
+  <li><a href="#">Contact</a></li>
+  <li class="divider"></li>
+  <li><a href="/accounts/logout">Logout</a></li>
+</ul>
+
 <nav>
-<div class="nav-wrapper">
-  <a href="/" class="brand-logo">InvestSmart</a>
+  <div class="nav-wrapper">
+    <a href="/" class="brand-logo">InvestSmart</a>
 
-  <ul class="right hide-on-med-and-down">
-    <li>      
-      <form>
-        <div class="input-field">
-          <input id="search" type="search" required>
-          <label class="label-icon" for="search" style="color: white"><strong>Search</strong> <i class="material-icons left">search</i></label>
-          <i class="material-icons">close</i>
-        </div>
-      </form>
-    </li>
+    <ul class="right hide-on-med-and-down">
+      <li>      
+        <form>
+          <div class="input-field">
+            <input id="search" type="search" required>
+            <label class="label-icon" for="search"><i class="material-icons">search</i></label>
+            <i class="material-icons">close</i>
+          </div>
+        </form>
+      </li>
 
-    {% if user.is_authenticated %}
+      {% if user.is_authenticated %}
       <!-- Dropdown Trigger -->
-      <li><a class="dropdown-trigger" data-target="dropdown1">{{user.username|title}}<i class="material-icons right">arrow_drop_down</i></a></li>
-    {% else %}
-      <li><a href="/login">Login</a></li>
-      <li><a href="/register">Register</a></li>
-    {% endif %}
+      <li><a class="dropdown-trigger" data-target="dropdown1">{{user.first_name|title}}<i class="material-icons right">arrow_drop_down</i></a></li>
+      {% else %}
+      <li><a href="/accounts/login">Login</a></li>
+      <li><a href="/accounts/register">Register</a></li>
+      {% endif %}
 
 
-  </ul>
-</div>
+    </ul>
+  </div>
 </nav>

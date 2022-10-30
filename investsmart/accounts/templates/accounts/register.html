@@ -1,4 +1,4 @@
-{% extends "main/header.html" %}
+{% extends 'main/base.html' %}
 {% block content %}
 
 	<h1>Register Page</h1>
@@ -6,7 +6,7 @@
 		<form method="POST">
 			{% csrf_token %}
 			{{form.as_p}}
-
+			<label >I Accept <a href="#" class="text-dark mr-2">Terms And Condition</a></label>
 			<button class="btn btn-outline-info" style="background-color: green" type="submit">Register</button>
 		</form>
 	if you have already account, <a href="/login" target="blank"><strong>Login</strong> </a>
