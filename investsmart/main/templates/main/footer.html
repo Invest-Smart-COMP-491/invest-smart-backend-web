@@ -30,13 +30,26 @@
 
 </head>
 
+<!-- Dropdown Structure -->
+<ul id="dropdown1" class="dropdown-content">
+  <li><a href="#">Who are we</a></li>
+  <li><a href="#">Services</a></li>
+  <li><a href="#">About</a></li>
+  <li><a href="#">Blog</a></li>
+  <li><a href="#">Contact</a></li>
+  <li class="divider"></li>
+  <li><a href="/logout">Logout</a></li>
+</ul>
+
 <body>
 
   {% include "main/includes/navbar.html" %}
   {% include "main/includes/messages.html" %}
 
-  
-  {% block content %}
-  {% endblock %}
-
+  <div class="container">
+    <br>
+    {% block content %}
+    {% endblock %}
+  </div>
+  <br>
 </body>
