@@ -24,8 +24,8 @@ def getNews(stock_name):
     return google_news.get_news(stock_name)
 
 
-def getFinanceNews(stock_name):
-    url = requests.get("https://www.google.com/finance/quote/" + stock_name + ":NASDAQ")
+def getGoogleFinanceNews(stock_ticker):
+    url = requests.get("https://www.google.com/finance/quote/" + stock_ticker + ":NASDAQ")
     soup = BeautifulSoup(url.content, 'html.parser')
     soup = soup.find_all('div', attrs={'class': 'yY3Lee'})
     news = []
