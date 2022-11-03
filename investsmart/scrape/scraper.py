@@ -1,9 +1,45 @@
 import numpy as np
 import pandas as pd
 import yfinance as yf
-
+import requests
+from bs4 import BeautifulSoup
+from gnews import GNews
+from newspaper import Article
 
 from investsmart.scrape.constants import STOCK_TICKERS_LIST
+
+
+def scrape(url):
+    article = Article(url)
+    article.download()
+    article.parse()
+    # nltk.download('punkt')  # 1 time download of the sentence tokenizer
+    article.nlp()
+    return article
+
+
+def getNews(stock_name):
+    google_news = GNews()
+    # google_news.period = '7d'
+    return google_news.get_news(stock_name)
+
+
+def getGoogleFinanceNews(stock_ticker):
+    url = requests.get("https://www.google.com/finance/quote/" + stock_ticker + ":NASDAQ")
+    soup = BeautifulSoup(url.content, 'html.parser')
+    soup = soup.find_all('div', attrs={'class': 'yY3Lee'})
+    news = []
+    for item in soup:
+        url = item.find('a', attrs={'rel': 'noopener noreferrer'})['href']
+        new = {
+            "title": item.find('div', attrs={'class': 'Yfwt5'}).text,
+            "published date": item.find('div', attrs={'class': 'Adak'}).text,
+            "url": url,
+            "publisher": {'href': url.partition('.com')[0] + ".com",
+                          'title': item.find('div', attrs={'class': 'sfyJob'}).text}
+        }
+        news.append(new)
+    return news
 
 
 class LivePrice:
