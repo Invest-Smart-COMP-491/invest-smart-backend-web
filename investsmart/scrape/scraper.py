@@ -5,6 +5,7 @@ import requests
 from bs4 import BeautifulSoup
 from gnews import GNews
 from newspaper import Article
+import finviz
 
 from investsmart.scrape.constants import STOCK_TICKERS_LIST
 
