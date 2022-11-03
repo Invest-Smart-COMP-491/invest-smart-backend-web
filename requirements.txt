@@ -5,3 +5,7 @@ numpy==1.21.5
 pandas
 yfinance
 sklearn
+requests~=2.27.1
+beautifulsoup4~=4.11.1
+gnews
+newspaper3k
