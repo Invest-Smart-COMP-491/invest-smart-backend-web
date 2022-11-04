@@ -2,13 +2,11 @@ import numpy as np
 import pandas as pd
 import yfinance as yf
 import requests
+import finviz
 from bs4 import BeautifulSoup
 from gnews import GNews
 from newspaper import Article
-import finviz
-
 from investsmart.scrape.constants import STOCK_TICKERS_LIST
-
 
 def scrape(url):
     article = Article(url)
@@ -43,6 +41,10 @@ def getGoogleFinanceNews(stock_ticker):
     return news
 
 
+def getYahooNews(stock_ticker):
+    stock = yf.Ticker(stock_ticker)
+    return stock.get_news()
+
 class LivePrice:
     def __init__(self, stock_name):
         self.stock_name = stock_name
@@ -60,6 +62,11 @@ class LivePrice:
 
     def getTarget(self):
         return finviz.get_analyst_price_targets(self.stock_name)
+
+    def getNews(self): # yahoo finance
+        stock = yf.Ticker(self.stock_name)
+        self.stock = stock
+        return self.stock.news
 
 
 class DBUpdater():
