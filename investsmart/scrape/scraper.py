@@ -7,6 +7,7 @@ from bs4 import BeautifulSoup
 from gnews import GNews
 from newspaper import Article
 from newsapi import NewsApiClient
+from investsmart.scrape.api_keys import NEWS_API_KEY
 
 from investsmart.scrape.constants import STOCK_TICKERS_LIST
 
@@ -98,7 +99,7 @@ class DBUpdater():
 
 class NewsAPI:
     def __init__(self):
-        self.client = NewsApiClient(api_key='d3202eedacdf4e69979e782ff7c6aa88')
+        self.client = NewsApiClient(api_key=NEWS_API_KEY)
         sources = self.client.get_sources()
         eng_ls = [i for i in sources['sources'] if i['language'] == 'en']
         self.eng_sources_str = str([j['id'] for j in eng_ls]).replace('[', '').replace(']', '').replace('\'', '')
