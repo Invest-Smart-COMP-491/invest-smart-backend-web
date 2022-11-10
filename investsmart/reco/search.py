@@ -3,16 +3,12 @@ import numpy as np
 import difflib
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-
 from investsmart.scrape.constants import STOCK_TICKERS_LIST, STOCKS_LIST
-
-string = 'appl'
-string_list = [i.lower() for i in database]
 
 tfidf_vectorizer = TfidfVectorizer(analyzer="char")
 
-sparse_matrix = tfidf_vectorizer.fit_transform([string]+string_list)
-cosine = cosine_similarity(sparse_matrix[0,:],sparse_matrix[1:,:])
+#sparse_matrix = tfidf_vectorizer.fit_transform([string]+string_list)
+#cosine = cosine_similarity(sparse_matrix[0,:],sparse_matrix[1:,:])
 
 class SearchRecommender:
     def __init__(self):
