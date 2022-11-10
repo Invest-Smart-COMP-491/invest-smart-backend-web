@@ -6,7 +6,10 @@ import finviz
 from bs4 import BeautifulSoup
 from gnews import GNews
 from newspaper import Article
+from newsapi import NewsApiClient
+from investsmart.scrape.api_keys import NEWS_API_KEY
 from investsmart.scrape.constants import STOCK_TICKERS_LIST
+
 
 def scrape(url):
     article = Article(url)
@@ -101,3 +104,18 @@ class DBUpdater():
          'target_to': 200.0}"""
         for tar in targets:
             db.update(tar)
+
+
+class NewsAPI:
+    def __init__(self):
+        self.client = NewsApiClient(api_key=NEWS_API_KEY)
+        sources = self.client.get_sources()
+        eng_ls = [i for i in sources['sources'] if i['language'] == 'en']
+        self.eng_sources_str = str([j['id'] for j in eng_ls]).replace('[', '').replace(']', '').replace('\'', '')
+
+    def getBusinessNews(self):
+        return self.client.get_top_headlines(category="business", sources=self.eng_sources_str)
+
+    def getAllNews(self, query):
+        news_list = self.client.get_everything(q=query, from_param='2022-10-10', to='2022-11-09')
+        return news_list
