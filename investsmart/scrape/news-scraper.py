@@ -36,7 +36,13 @@ class NewsScraper:
     def getNews(self):
         google_news = GNews()
         # google_news.period = '7d'
-        news = google_news.get_news(self.stock_name)
+        try:
+            news = google_news.get_news(self.stock_name)
+        except Exception as e:
+            print(e)
+            print("Error fetching news with google news stock: ", self.stock_name)
+            return None
+
         results = pd.DataFrame().from_dict(news)
         publisher = list(results['publisher'].to_dict().values())
         publisher = pd.DataFrame().from_dict(publisher)
@@ -50,7 +56,12 @@ class NewsScraper:
 
     def getYahooNews(self):
         stock = yf.Ticker(self.stock_ticker)
-        df = pd.DataFrame().from_dict(stock.get_news())
+        try:
+            df = pd.DataFrame().from_dict(stock.get_news())
+        except Exception as e:
+            print(e)
+            print("Error fetching news with Yahoo news: ", self.stock_ticker)
+            return None
 
         results = pd.DataFrame()
         results['title'] = df['title']
