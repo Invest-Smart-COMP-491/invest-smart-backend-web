@@ -1,10 +1,7 @@
 import numpy as np
 import pandas as pd
 import yfinance as yf
-import requests
 import finviz
-from bs4 import BeautifulSoup
-from gnews import GNews
 from newspaper import Article
 from newsapi import NewsApiClient
 from investsmart.scrape.api_keys import NEWS_API_KEY
@@ -19,34 +16,6 @@ def scrape(url):
     article.nlp()
     return article
 
-
-def getNews(stock_name):
-    google_news = GNews()
-    # google_news.period = '7d'
-    return google_news.get_news(stock_name)
-
-
-def getGoogleFinanceNews(stock_ticker):
-    url = requests.get("https://www.google.com/finance/quote/" + stock_ticker + ":NASDAQ")
-    soup = BeautifulSoup(url.content, 'html.parser')
-    soup = soup.find_all('div', attrs={'class': 'yY3Lee'})
-    news = []
-    for item in soup:
-        url = item.find('a', attrs={'rel': 'noopener noreferrer'})['href']
-        new = {
-            "title": item.find('div', attrs={'class': 'Yfwt5'}).text,
-            "published date": item.find('div', attrs={'class': 'Adak'}).text,
-            "url": url,
-            "publisher": {'href': url.partition('.com')[0] + ".com",
-                          'title': item.find('div', attrs={'class': 'sfyJob'}).text}
-        }
-        news.append(new)
-    return news
-
-
-def getYahooNews(stock_ticker):
-    stock = yf.Ticker(stock_ticker)
-    return stock.get_news()
 
 class LivePrice:
     def __init__(self, stock_name):
