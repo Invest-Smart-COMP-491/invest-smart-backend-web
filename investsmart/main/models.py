@@ -16,6 +16,8 @@ class TestModel(models.Model):
 	class Meta:
 		verbose_name_plural = 'TestModels'
 
+
+"""
 class NewsModel(models.Model):
 	title = models.CharField(max_length = 200)
 	url = models.TextField()
@@ -24,3 +26,4 @@ class NewsModel(models.Model):
 
 	def __str__(self):
 		return self.test_model_title
+"""
