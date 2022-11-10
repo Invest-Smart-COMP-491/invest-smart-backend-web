@@ -13,6 +13,14 @@ class NewsScraper:
         self.stock_name = stock_name
         self.stock_ticker = stock_ticker
 
+    def getAllNews(self):
+        gnews = self.getGoogleNews()
+        gfnews = self.getGoogleFinanceNews()
+        ynews = self.getYahooNews()
+        results = pd.concat([gnews, gfnews, ynews])
+        results = results.drop_duplicates(subset='url').reset_index().drop(['index'], axis=1)
+        return results
+
     def getGoogleFinanceNews(self):
         url = requests.get("https://www.google.com/finance/quote/" + self.stock_ticker + ":NASDAQ")
         soup = BeautifulSoup(url.content, 'html.parser')
@@ -22,6 +30,7 @@ class NewsScraper:
             url = item.find('a', attrs={'rel': 'noopener noreferrer'})['href']
             s_new = {
                 "title": item.find('div', attrs={'class': 'Yfwt5'}).text,
+                "description": "",
                 "published date": find_date(url),  # item.find('div', attrs={'class': 'Adak'}).text,
                 "url": url,
                 "publisher": item.find('div', attrs={'class': 'sfyJob'}).text,
@@ -33,7 +42,7 @@ class NewsScraper:
         results['published date'] = results['published date'].apply(lambda x: parser.parse(x))
         return results
 
-    def getNews(self):
+    def getGoogleNews(self):
         google_news = GNews()
         # google_news.period = '7d'
         try:
@@ -65,10 +74,9 @@ class NewsScraper:
 
         results = pd.DataFrame()
         results['title'] = df['title']
+        results['description'] = ""
         results['published date'] = df['providerPublishTime'].apply(lambda x: datetime.datetime.fromtimestamp(x))
         results['url'] = df['link']
         results['publisher'] = df['publisher']
         results['href'] = df['link'].apply(lambda x: x.partition('.com')[0] + ".com")
         return results
-
-
