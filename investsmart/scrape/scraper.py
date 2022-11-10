@@ -2,10 +2,11 @@ import numpy as np
 import pandas as pd
 import yfinance as yf
 import requests
+import finviz
 from bs4 import BeautifulSoup
 from gnews import GNews
 from newspaper import Article
-import finviz
+from newsapi import NewsApiClient
 
 from investsmart.scrape.constants import STOCK_TICKERS_LIST
 
@@ -94,3 +95,13 @@ class DBUpdater():
          'target_to': 200.0}"""
         for tar in targets:
             db.update(tar)
+
+class NewsAPI:
+    def __init__(self):
+        self.client = NewsApiClient(api_key='d3202eedacdf4e69979e782ff7c6aa88')
+        sources = self.client.get_sources()
+        eng_ls = [i for i in sources['sources'] if i['language'] == 'en']
+        self.eng_sources_str = str([j['id'] for j in eng_ls]).replace('[', '').replace(']', '').replace('\'', '')
+
+    def getBusinessNews(self):
+        return self.client.get_top_headlines(category="business", sources=self.eng_sources_str)
