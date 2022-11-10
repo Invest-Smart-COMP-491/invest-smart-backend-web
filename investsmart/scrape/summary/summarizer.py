@@ -1,6 +1,6 @@
 import requests
-
-API_TOKEN = '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' # organization token
+from investsmart.scrape.api_keys import HUGGING_FACE_KEY
+API_TOKEN = HUGGING_FACE_KEY # organization token
 
 API_URL = "https://api-inference.huggingface.co/models/facebook/bart-large-cnn"
 headers = {"Authorization": f"Bearer {API_TOKEN}"}
