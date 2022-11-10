@@ -30,7 +30,7 @@ class NewsScraper:
             url = item.find('a', attrs={'rel': 'noopener noreferrer'})['href']
             s_new = {
                 "title": item.find('div', attrs={'class': 'Yfwt5'}).text,
-                "description": None,
+                "description": "",
                 "published date": find_date(url),  # item.find('div', attrs={'class': 'Adak'}).text,
                 "url": url,
                 "publisher": item.find('div', attrs={'class': 'sfyJob'}).text,
@@ -74,6 +74,7 @@ class NewsScraper:
 
         results = pd.DataFrame()
         results['title'] = df['title']
+        results['description'] = ""
         results['published date'] = df['providerPublishTime'].apply(lambda x: datetime.datetime.fromtimestamp(x))
         results['url'] = df['link']
         results['publisher'] = df['publisher']
