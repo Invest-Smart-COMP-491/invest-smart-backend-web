@@ -16,3 +16,5 @@ newsapi
 htmldate
 praw
 scikit-learn~=1.1.3
+psycopg2
+
