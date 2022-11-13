@@ -20,4 +20,7 @@ app_name = "main"
 
 urlpatterns = [
 	path("",views.HomeView.as_view(),name="homepage"),
+    path("updateAssets",views.updateAssetsView.as_view(),name="updateAssets"),
+    path("<slug:slug>", views.categoryView.as_view(), name="category_detail"),
+    path("asset/<slug:slug>", views.AssetDetailView.as_view(), name="asset_detail"),
 ]

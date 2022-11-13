@@ -1,6 +1,7 @@
 
 <!-- Dropdown Structure -->
 <ul id="dropdown1" class="dropdown-content">
+  <li><a href="/updateAssets">Create and Update Assets</a></li>
   <li><a href="#">Who are we</a></li>
   <li><a href="#">Services</a></li>
   <li><a href="#">About</a></li>
@@ -24,7 +25,6 @@
           </div>
         </form>
       </li>
-
       {% if user.is_authenticated %}
       <!-- Dropdown Trigger -->
       <li><a class="dropdown-trigger" data-target="dropdown1">{{user.first_name|title}}<i class="material-icons right">arrow_drop_down</i></a></li>

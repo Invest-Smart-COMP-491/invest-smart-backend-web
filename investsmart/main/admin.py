@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import TestModel
+from .models import *
 from tinymce.widgets import TinyMCE
 from django.db import models
 
@@ -19,3 +19,6 @@ class TestModelAdmin(admin.ModelAdmin):
 	}
 
 admin.site.register(TestModel,TestModelAdmin)
+admin.site.register(AssetCategory)
+admin.site.register(Asset)
+admin.site.register(News)

@@ -1,0 +1,15 @@
+{% extends "main/header.html" %}
+{% block content %}
+
+<h3>Asset</h3>
+
+<div class="row">
+	<div>
+		<h2>{{ asset.asset_name }}</h2>
+		<h3>{{ asset.asset_ticker }}</h2>
+			<p>Price: {{ asset.last_price }}</p>
+			<p>Market Cap: {{ asset.market_size }}</p>
+		</div>
+	</div>
+
+	{% endblock %}
