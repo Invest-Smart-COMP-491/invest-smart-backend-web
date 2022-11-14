@@ -1,7 +1,7 @@
 {% extends "main/header.html" %}
 {% block content %}
 
-<h3>Assets</h3>
+<h3>{{category|safe}} Assets</h3>
 
 <div class="row">
 	{% for assetObj in asset_series %}
@@ -16,7 +16,7 @@
 	              <p>Market Cap: {{assetObj.market_size|safe}}</p> 
 	      </div>
 	      <div class="card-action">
-	      	<a href="#">Stocks</a>
+	      	<a href="/asset/{{ assetObj.asset_ticker }}">Stocks</a>
 	      </div>
 	  </div>
 	</a>

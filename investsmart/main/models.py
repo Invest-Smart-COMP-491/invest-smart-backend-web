@@ -34,8 +34,6 @@ class AssetCategory(models.Model):
 	#def get_absolute_url(self):
 	#	return reverse("category_detail", kwargs={"slug": self.slug})
 
-
-
 class Asset(models.Model):
 	asset_name = models.CharField(max_length = 200,default=None)
 	asset_ticker = models.CharField(max_length = 20,unique=True)
@@ -54,9 +52,10 @@ class Asset(models.Model):
 
 class News(models.Model):
 	title = models.CharField(max_length = 200,unique=True)
-	link = models.URLField(default=None) 
-	date_time = models.DateTimeField("date published",default=timezone.now)
-	source = models.CharField(max_length = 200)
+	description = models.TextField(null=True, blank=True)
+	url = models.URLField(default=None) 
+	published_date = models.DateTimeField("published date",default=timezone.now)
+	publisher = models.CharField(max_length = 200)
 	asset = models.ForeignKey(Asset, default=None, verbose_name="Asset", on_delete=models.SET_DEFAULT)
 	#mentioned_asset = models.ManyToManyField(Asset)
 
