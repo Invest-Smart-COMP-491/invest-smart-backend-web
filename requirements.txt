@@ -22,6 +22,6 @@ redis
 eventlet
 crontab
 django-celery-beat
--U python-dotenv
+python-dotenv
 pymongo
 sqlalchemy
