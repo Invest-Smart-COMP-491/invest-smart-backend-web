@@ -1,9 +1,12 @@
 import pandas as pd
 import praw
+client_id = 'Xa4qKcIg4UntujY4wOWnig'
+secret = 'xsdo1Us0l79PSdTvCdp_Kx591LQwbA'
+user_agent = 'invest'
 
 class RedditScraper:
     def __init__(self):
-        self.reddit = praw.Reddit(client_id='***', client_secret='***', user_agent='***')  # TODO: anonimized version
+        self.reddit = praw.Reddit(client_id=client_id, client_secret=secret, user_agent=user_agent)  # TODO: anonimized version
 
     def getPosts(self, subreddit, lim=10):
         posts = []

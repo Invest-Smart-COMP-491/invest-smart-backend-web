@@ -3,9 +3,10 @@ import pandas as pd
 import yfinance as yf
 import finviz
 from newspaper import Article
-from newsapi import NewsApiClient
-from investsmart.scrape.api_keys import NEWS_API_KEY
-from investsmart.scrape.constants import STOCK_TICKERS_LIST
+# from newsapi import NewsApiClient # gets error ? 
+# ImportError: cannot import name 'NewsApiClient' from 'newsapi'
+from scrape.api_keys import NEWS_API_KEY
+from scrape.constants import STOCK_TICKERS_LIST
 
 
 def scrape(url):

@@ -78,4 +78,14 @@ class LogoutView(View):
 	def post(self, request, *args, **kwargs):
 		HttpResponse("Page Loaded")  
 
+class ProfileView(View):
+	template_name = "accounts/profile.html"
+
+	def get(self,request,*args,**kwargs):
+		user = request.user
+		return render(request=request,template_name=self.template_name,context={"user":user})
+
+
+	def post(self, request, *args, **kwargs):
+		HttpResponse("Page Loaded") 
 

@@ -1,0 +1,27 @@
+{% extends "main/header.html" %}
+{% block content %}
+
+<h3>{{category|safe}} Assets</h3>
+
+<div class="row">
+	{% for assetObj in asset_series %}
+	<div class="col s12 m6 l4">
+		<a href="/asset/{{ assetObj.asset_ticker }}">
+			<div class="card blue-grey darken-1 hoverable">
+				<div class="card-content white-text">
+					<span class="card-title">{{assetObj.asset_name}}</span>
+	              <p style="font-size:80%" > Ticker: {{assetObj.asset_ticker}}</p>
+	              <br>
+	              <p>Price: {{assetObj.last_price|safe}}</p>
+	              <p>Market Cap: {{assetObj.market_size|safe}}</p> 
+	      </div>
+	      <div class="card-action">
+	      	<a href="/asset/{{ assetObj.asset_ticker }}">Stocks</a>
+	      </div>
+	  </div>
+	</a>
+</div>
+{% endfor %}
+</div>
+
+{% endblock %}
