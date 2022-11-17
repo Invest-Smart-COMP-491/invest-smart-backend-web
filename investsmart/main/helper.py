@@ -57,7 +57,22 @@ def updateLastPrice(ticker):
 		asset.save()
 	except:
 		print(ticker," failed to update price")
-		
+
+def updateNewsFast():
+	from multiprocessing import Pool
+	with Pool(5) as p:
+		p.starmap(updateSingle, [STOCK_TICKERS_LIST,STOCKS_LIST])
+
+def updateSingle(ticker, name):
+	if "." in ticker:  # .B ones have problem - we will handle it later
+		return
+	try:
+		asset = Asset.objects.get(asset_ticker=ticker)
+	except asset.DoesNotExist:
+		asset = createandUpdateAsset(ticker, name)
+	downloadNews(ticker, name, asset)
+
+
 def createandUpdateNews():
 	for ticker,name in zip(STOCK_TICKERS_LIST,STOCKS_LIST):
 
