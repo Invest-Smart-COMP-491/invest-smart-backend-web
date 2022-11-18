@@ -12,6 +12,7 @@ class NewsScraper:
         self.stock_name = stock_name
         self.stock_ticker = stock_ticker
         self.news_functions = [self.getGoogleNews, self.getGoogleFinanceNews, self.getYahooNews]
+        self.scraped_dict = {}
 
 
     def CustomFindDate(self,url): # updated 
@@ -50,6 +51,10 @@ class NewsScraper:
         news = []
         for item in soup:
             url = item.find('a', attrs={'rel': 'noopener noreferrer'})['href']
+            if url in self.scraped_dict:
+                continue
+            self.scraped_dict[url] = 'v'
+
             s_new = {
                 "title": item.find('div', attrs={'class': 'Yfwt5'}).text,
                 "description": "",
@@ -70,7 +75,7 @@ class NewsScraper:
 
     def getGoogleNews(self):
         google_news = GNews()
-        # google_news.period = '7d'
+        google_news.period = '1d'
         try:
             news = google_news.get_news(self.stock_name)
         except Exception as e:
@@ -108,7 +113,3 @@ class NewsScraper:
         results['publisher'] = df['publisher']
         results['href'] = df['link'].apply(lambda x: x.partition('.com')[0] + ".com")
         return results
-
-
-#Test
-#print(NewsScraper("Apple", "AAPL").getAllNews())
