@@ -1,6 +1,7 @@
 /investsmart/celery.beat.log
 /investsmart/celery.log
 /investsmart/celerybeat-schedule.dat
+
 # User-specific stuff
 .idea/**/workspace.xml
 .idea/**/tasks.xml
