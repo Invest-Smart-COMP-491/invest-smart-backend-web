@@ -8,14 +8,14 @@ celery_app = Celery('investsmart')
 celery_app.config_from_object('django.conf:settings', namespace='CELERY')
 celery_app.autodiscover_tasks()
 
-for (stock_name, stock_ticker) in zip(STOCKS_LIST[:5], STOCK_TICKERS_LIST[:5]):
+for (stock_name, stock_ticker) in zip(STOCKS_LIST, STOCK_TICKERS_LIST):
     us_sched = {
         # Scheduler Name
         'update-news-'+stock_name: {
             # Task Name (Name Specified in Decorator)
             'task': 'upload_news',
             # Schedule
-            'schedule': 10.0,
+            'schedule': 3600.0,
             # Function Arguments
             'args': (2, stock_name, stock_ticker)
         },

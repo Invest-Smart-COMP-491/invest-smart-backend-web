@@ -9,6 +9,6 @@ from scrape.news_scraper import NewsScraper
 def upload_news(period, stock_name, stock_ticker, *args, **kwargs):
     nscraper = NewsScraper(stock_name, stock_ticker)
     news = nscraper.getAllNews()
-    print(news)
+    #print(news)
 
 
