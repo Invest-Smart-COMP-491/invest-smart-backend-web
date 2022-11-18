@@ -6,6 +6,8 @@
 *.pyc
 *.dat
 *.bat
+*.db
+*.iml
 
 # User-specific stuff
 .idea/**/workspace.xml
