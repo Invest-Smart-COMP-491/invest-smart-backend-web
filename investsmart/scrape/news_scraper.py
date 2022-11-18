@@ -45,7 +45,15 @@ class NewsScraper:
         return results
 
     def getGoogleFinanceNews(self):
-        url = requests.get("https://www.google.com/finance/quote/" + self.stock_ticker + ":NASDAQ") 
+        mapper = {"BRK-B": "BRK.A"}
+        market = ":NASDAQ"
+
+        if self.stock_ticker in mapper:
+            market = ":NYSE"
+            self.stock_ticker = mapper[self.stock_ticker]
+
+        url = requests.get("https://www.google.com/finance/quote/" + self.stock_ticker + market)
+
         soup = BeautifulSoup(url.content, 'html.parser')
         soup = soup.find_all('div', attrs={'class': 'yY3Lee'})
         news = []
