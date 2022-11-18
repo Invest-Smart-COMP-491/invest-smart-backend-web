@@ -11,6 +11,7 @@ class NewsScraper:
     def __init__(self, stock_name, stock_ticker):
         self.stock_name = stock_name
         self.stock_ticker = stock_ticker
+        self.news_functions = [self.getGoogleNews, self.getGoogleFinanceNews, self.getYahooNews]
 
 
     def CustomFindDate(self,url): # updated 
@@ -21,12 +22,25 @@ class NewsScraper:
             date = datetime.datetime.now().date().strftime(format="%Y-%m-%d") # TODO: you can handle in different way  - format is same with above one 
         return date 
 
+    
+
     def getAllNews(self):
-        gnews = self.getGoogleNews() # TODO: some returns empty,should handle it
-        gfnews = self.getGoogleFinanceNews() # TODO: some returns empty,should handle it
-        ynews = self.getYahooNews() # TODO: some returns empty,should handle it
-        results = pd.concat([gnews, gfnews, ynews])
-        results = results.drop_duplicates(subset='url').reset_index().drop(['index'], axis=1)
+        df_news = []
+
+        for news_function in self.news_functions:
+            try:
+                df = news_function()
+                #print(df)
+                if not df.empty:
+                    df_news.append(df)
+            except Exception as e:
+                print(e)
+                print("Error for ", self.stock_name, " during calling ", news_function)
+        
+        results = pd.DataFrame()
+        if len(df_news) > 0:
+            results = pd.concat(df_news)
+            results = results.drop_duplicates(subset='url').reset_index().drop(['index'], axis=1)
         return results
 
     def getGoogleFinanceNews(self):
@@ -94,3 +108,7 @@ class NewsScraper:
         results['publisher'] = df['publisher']
         results['href'] = df['link'].apply(lambda x: x.partition('.com')[0] + ".com")
         return results
+
+
+#Test
+#print(NewsScraper("Apple", "AAPL").getAllNews())
