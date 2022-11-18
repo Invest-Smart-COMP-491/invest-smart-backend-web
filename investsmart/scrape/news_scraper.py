@@ -7,12 +7,13 @@ from htmldate import find_date
 from dateutil import parser
 import datetime
 
+scraped_dict = {}
+
 class NewsScraper:
     def __init__(self, stock_name, stock_ticker):
         self.stock_name = stock_name
         self.stock_ticker = stock_ticker
         self.news_functions = [self.getGoogleNews, self.getGoogleFinanceNews, self.getYahooNews]
-        self.scraped_dict = {}
 
 
     def CustomFindDate(self,url): # updated 
@@ -59,9 +60,9 @@ class NewsScraper:
         news = []
         for item in soup:
             url = item.find('a', attrs={'rel': 'noopener noreferrer'})['href']
-            if url in self.scraped_dict:
+            if url in scraped_dict:
                 continue
-            self.scraped_dict[url] = 'v'
+            scraped_dict[url] = 'v'
 
             s_new = {
                 "title": item.find('div', attrs={'class': 'Yfwt5'}).text,
@@ -82,8 +83,8 @@ class NewsScraper:
         return results
 
     def getGoogleNews(self):
-        google_news = GNews()
-        google_news.period = '1d'
+        google_news = GNews(max_results=20)
+
         try:
             news = google_news.get_news(self.stock_name)
         except Exception as e:
