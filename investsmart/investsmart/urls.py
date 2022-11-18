@@ -15,10 +15,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
+#from .investsmart.api import urls as api_urls
+
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path('accounts/',include('accounts.urls')),
     path('',include('main.urls')),
-    path('tinymce/',include('tinymce.urls'))
+    path('tinymce/',include('tinymce.urls')),
+    path('api-auth/', include('rest_framework.urls')),
+    path('api/', include('api.urls'))
 ]

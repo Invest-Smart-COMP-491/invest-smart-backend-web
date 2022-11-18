@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     "main.apps.MainConfig",
     "accounts.apps.AccountsConfig",
     "tinymce",
+    'rest_framework',
+    'api'
 ]
 
 MIDDLEWARE = [
