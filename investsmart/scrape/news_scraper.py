@@ -39,7 +39,7 @@ class NewsScraper:
             s_new = {
                 "title": item.find('div', attrs={'class': 'Yfwt5'}).text,
                 "description": "",
-                "published date": self.CustomFindDate(url),  # item.find('div', attrs={'class': 'Adak'}).text, # updated 
+                "published_date": self.CustomFindDate(url),  # item.find('div', attrs={'class': 'Adak'}).text, # updated 
                 "url": url,
                 "publisher": item.find('div', attrs={'class': 'sfyJob'}).text,
                 "href": url.partition('.com')[0] + ".com"
@@ -51,7 +51,7 @@ class NewsScraper:
         if results.empty: # TODO: handle empty results, I have handled direcly returning null, check it 
             return results
 
-        results['published_date'] = results['published date'].apply(lambda x: parser.parse(x)) 
+        results['published_date'] = results['published_date'].apply(lambda x: parser.parse(x)) 
         return results
 
     def getGoogleNews(self):
@@ -74,6 +74,7 @@ class NewsScraper:
         results['publisher'] = publisher_title
         
         results['published_date'] = results['published date'].apply(lambda x: parser.parse(x)) 
+        results.drop(['published date'], axis=1, inplace=True)
         return results
 
     def getYahooNews(self):

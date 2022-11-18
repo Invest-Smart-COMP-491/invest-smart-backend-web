@@ -9,28 +9,12 @@ celery_app.autodiscover_tasks()
 
 celery_app.conf.beat_schedule = {
     # Scheduler Name
-    'print-message-ten-seconds': {
+    'update-news': {
         # Task Name (Name Specified in Decorator)
-        'task': 'print_msg_main',
+        'task': 'upload_news',
         # Schedule
-        'schedule': 10.0,
+        'schedule': 300.0,
         # Function Arguments
-        'args': ("Hello",)
-    },
-    # Scheduler Name
-    'print-time-twenty-seconds': {
-        # Task Name (Name Specified in Decorator)
-        'task': 'print_time',
-        # Schedule
-        'schedule': 20.0,
-    },
-    # Scheduler Name
-    'calculate-forty-seconds': {
-        # Task Name (Name Specified in Decorator)
-        'task': 'get_calculation',
-        # Schedule
-        'schedule': 40.0,
-        # Function Arguments
-        'args': (10, 20)
+        'args': (2,)
     },
 }
