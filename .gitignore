@@ -2,6 +2,13 @@
 /investsmart/celery.log
 /investsmart/celerybeat-schedule.dat
 
+*.xml
+*.pyc
+*.dat
+*.bat
+*.db
+*.iml
+
 # User-specific stuff
 .idea/**/workspace.xml
 .idea/**/tasks.xml
@@ -76,3 +83,5 @@ fabric.properties
 
 # Android studio 3.1+ serialized cache file
 .idea/caches/build_file_checksums.ser
+investsmart/celerybeat-schedule.bak
+investsmart/celerybeat-schedule.dir

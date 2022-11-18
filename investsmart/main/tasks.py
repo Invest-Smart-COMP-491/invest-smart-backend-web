@@ -1,20 +1,14 @@
 from celery import shared_task
 from datetime import datetime
+from scrape.news_scraper import NewsScraper
+from .helper import createandUpdateNews
 
 
-@shared_task(name="print_msg_main")
-def print_message(message, *args, **kwargs):
-    print(f"Celery is working!! Message is {message}")
+#TODO: period is not used yet
+@shared_task(name="upload_news")
+def upload_news(period, stock_name, stock_ticker, *args, **kwargs):
+    nscraper = NewsScraper(stock_name, stock_ticker)
+    df_news = nscraper.getAllNews()
+    createandUpdateNews(stock_name, stock_ticker, df_news)
 
 
-@shared_task(name="print_time")
-def print_time():
-    now = datetime.now()
-    current_time = now.strftime("%H:%M:%S")
-    print(f"Current Time is {current_time}")
-
-
-@shared_task(name='get_calculation')
-def calculate(val1, val2):
-    total = val1 + val2
-    return total

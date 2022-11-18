@@ -58,48 +58,23 @@ def updateLastPrice(ticker):
 	except:
 		print(ticker," failed to update price")
 		
-def createandUpdateNews():
-	for ticker,name in zip(STOCK_TICKERS_LIST,STOCKS_LIST):
 
-		if "." in ticker: #.B ones have problem - we will handle it later 
-			continue
+def createandUpdateNews(name, ticker, df_news):
+	if "." in ticker: #.B ones have problem - we will handle it later 
+		return
 
-		try:
-			asset = Asset.objects.get(asset_ticker = ticker)
-		except asset.DoesNotExist:
-			asset = createandUpdateAsset(ticker,name)
-
-		downloadNews(ticker,name,asset)
-
-def downloadNews(ticker,name,asset):
-
-	n_scraper = NewsScraper(name,ticker)
-	results = n_scraper.getAllNews()
-
-	"""This method is depreciated due to long run time, TODO: update db directly from dataframe"""
-
-	# Not able to iterate directly over the DataFrame
-	df_records = results.to_dict()
+	try:
+		asset = Asset.objects.get(asset_ticker = ticker)
+	except asset.DoesNotExist:
+		asset = createandUpdateAsset(ticker,name)
 
 	model_instances = [News(
-	    title=df_records['title'][record],
-	    description = df_records['description'][record],
-	    url = df_records['url'][record],
-	    published_date = df_records['published_date'][record],
-	    publisher =  df_records['publisher'][record],
+	    title=row['title'],
+	    description = row['description'],
+	    url = row['url'],
+	    published_date = row['published_date'],
+	    publisher =  row['publisher'],
 	    asset = asset
-	) for record in range(len(df_records["title"]))]
+	) for index, row in df_news.iterrows()]
 
 	News.objects.bulk_create(model_instances,ignore_conflicts = True) # update_conflicts=True
-
-	"""
-	for news in results:
-		try:
-
-			newsDB = News.objects.get(title = news["title"])
-			print(newsDB)
-		except news.DoesNotExist:
-			newsDB = News(title = news["title"],description = news['description'] ,href = news['href'] ,published_date = news['published_date'] , publisher =  news['publisher'],asset = asset)
-			newsDB.save()
-
-	"""
