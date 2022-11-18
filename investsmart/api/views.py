@@ -48,7 +48,7 @@ class NewsApiView(APIView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)"""
 
-"""class PriceApiView(APIView):
+class PriceApiView(APIView):
     # add permission to check if user is authenticated
     #permission_classes = [permissions.IsAuthenticated]
 
@@ -63,10 +63,9 @@ class NewsApiView(APIView):
             slug = kwargs.get('slug')
             assets = [c.asset_ticker for c in Asset.objects.all()]
             if slug in assets:
-                asset = Asset.objects.filter(asset_ticker=slug).first()
-                news = News.objects.filter(asset=asset)
+                ret = Asset.objects.all().last_price.filter(asset_ticker=slug).first()
         else:
-            news = News.objects.all()
+            ret = Asset.objects.all().last_price
         
-        serializer = APISerializer(news, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)"""
+        serializer = APISerializer(ret, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
