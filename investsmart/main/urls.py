@@ -26,5 +26,11 @@ urlpatterns = [
     path("updatePrices",views.updatePricesView.as_view(),name="updatePrices"),
     path("<slug:slug>", views.categoryView.as_view(), name="category_detail"),
     path("asset/<slug:slug>", views.AssetDetailView.as_view(), name="asset_detail"),
+    path("asset/", views.AssetDetailView.as_view(), name="assets"),
+    path("asset/<slug:slug>/price", views.AssetPriceView.as_view(), name="asset_price"),
+    path("asset/price", views.AssetPriceView.as_view(), name="price"),
     path("asset/<slug:slug>/news", views.AssetNewsView.as_view(), name="asset_news"),
+    path("asset/news", views.AssetNewsView.as_view(), name="news"),
+    path("asset/fav", views.CurrentUserFavouriteAssetsView.as_view(), name="favourite_assets"),
+    path("asset/favCategory", views.CurrentUserFavouriteCategoryView.as_view(), name="favourite_categories"),
 ]

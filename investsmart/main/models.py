@@ -24,7 +24,8 @@ class AssetCategory(models.Model):
 class FavouriteCategory(models.Model):
 	user = models.ForeignKey(CustomUser,default=None,verbose_name='User',on_delete=models.CASCADE)
 	asset_category = models.ForeignKey(AssetCategory, default=None, verbose_name="Category", on_delete=models.SET_DEFAULT)
-
+	favourite_date = models.DateTimeField("date added",default=timezone.now)
+	
 	def __str__(self):
 		return self.user.username + ": " + self.asset_category.category_name
 
@@ -49,9 +50,10 @@ class Asset(models.Model):
 class FavouriteAsset(models.Model):
 	user = models.ForeignKey(CustomUser,default=None,verbose_name='User',on_delete=models.CASCADE)
 	asset = models.ForeignKey(Asset, default=None, verbose_name="Asset", on_delete=models.CASCADE)
+	favourite_date = models.DateTimeField("date added",default=timezone.now)
 
 	def __str__(self):
-		return self.user.username + ": " + self.asset.asset_ticker
+		return self.user__username + " " + self.asset__asset_ticker
 
 	class Meta:
 		verbose_name_plural = 'FavouriteAssets'
@@ -114,17 +116,6 @@ class CommentLike(models.Model):
 
 	class Meta:
 		verbose_name_plural = 'Commentlikes'
-
-class favourite(models.Model):
-	user = models.ForeignKey(CustomUser,default=None,verbose_name='User',on_delete=models.CASCADE)
-	asset = models.ForeignKey(Asset, default=None, verbose_name="Asset", on_delete=models.CASCADE)
-	favourite_date = models.DateTimeField("date published",default=timezone.now)
-
-	def __str__(self):
-		return self.user__username + " " + self.asset__asset_ticker
-
-	class Meta:
-		verbose_name_plural = 'Favourites'
 
 
 class CommentLike(models.Model):

@@ -8,6 +8,9 @@ from newspaper import Article
 from scrape.api_keys import NEWS_API_KEY
 from scrape.constants import STOCK_TICKERS_LIST
 
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
+
 
 def scrape(url):
     article = Article(url)

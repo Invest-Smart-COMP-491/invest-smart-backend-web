@@ -6,7 +6,10 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import permissions
 from main import models
+from accounts import models as accountModels
 from . import serializers
+
+import numpy as np
 
 class NewsApiView(APIView):
     # add permission to check if user is authenticated
@@ -26,18 +29,38 @@ class NewsApiView(APIView):
         serializer = serializers.NewsSerializer(news, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-class PriceApiView(APIView):
+class CurrentUserFavouriteAssetsApiView(APIView):
+    def get(self, request, *args, **kwargs):
+
+        user = request.user
+        ret = models.FavouriteAsset.objects.filter(user=user)
+        # ret = np.array([])
+        
+        serializer = serializers.FavouriteAssetSerializer(ret, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class CurrentUserFavouriteCategoryApiView(APIView):
+    def get(self, request, *args, **kwargs):
+
+        user = request.user
+        ret = models.FavouriteCategory.objects.filter(user=user)
+        
+        serializer = serializers.FavouriteCategorySerializer(ret, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class PriceApiView(APIView): #TODO:
     def get(self, request, *args, **kwargs):
         if len(kwargs) > 0:
-            print(kwargs)
+            print(kwargs) 
             slug = kwargs.get('slug')
             assets = [c.asset_ticker for c in models.Asset.objects.all()]
             if slug in assets:
-                ret = models.Asset.objects.all().last_price.filter(asset_ticker=slug).first()
+                asset = models.Asset.objects.filter(asset_ticker=slug).first()
+                ret = models.AssetPrice.objects.filter(asset=asset)
         else:
-            ret = models.Asset.objects.all().last_price
+            ret = models.AssetPrice.objects.all()
         
-        serializer = serializers.NewsSerializer(ret, many=True)
+        serializer = serializers.AssetPriceSerializer(ret, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -49,22 +72,28 @@ class CategoryApiView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class AssetApiView(APIView):
+class AssetsApiView(APIView):
     def get(self, request, *args, **kwargs):
-        assets = models.Asset.objects.all()
+
+        if len(kwargs) > 0:
+            print(kwargs)
+            # category_id = kwargs.get('category_id') # category_id also can be used 
+            slug = kwargs.get('slug') 
+            assets = models.Asset.objects.filter(asset_category__slug=slug)
+
+        else:
+            assets = models.Asset.objects.all()
         
         serializer = serializers.AssetSerializer(assets, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
 
 class CommentsApiView(APIView):
     def get(self, request, *args, **kwargs):
         if len(kwargs) > 0:
             print(kwargs)
-            slug = kwargs.get('slug')
-            asset = models.Asset.objects.filter(asset_ticker=slug).first()
-            #TODO: Is asset_id check correct?
-            comments = models.Comment.objects.filter(asset_id=asset)
+            ticker = kwargs.get('slug')
+            asset = models.Asset.objects.filter(asset_ticker=ticker).first()
+            comments = models.Comment.objects.filter(asset=asset)
         else:
             comments = models.Comment.objects.all()
         
@@ -76,13 +105,11 @@ class CommentsLikesApiView(APIView):
     def get(self, request, *args, **kwargs):
         if len(kwargs) > 0:
             print(kwargs)
-            slug = kwargs.get('slug')
-            #TODO: filters are probably wrong
-            user = models.CustomUser.objects.filter(username=slug).first()
-            asset = models.CommentLike.objects.filter(user=user).first()
-            comments = models.Comment.objects.filter(asset_id=asset)
-            serializer = serializers.CommentSerializer(comments, many=True)
+            comment_id = kwargs.get('comment_id')
+            commentlikes = CommentLike.objects.get(comment_id=comment_id)
         else:
-            likes = models.CommentLike.objects.all()
-            serializer = serializers.CommentLikeSerializer(likes, many=True)
+            #commentlikes = models.CommentLike.objects.all()
+            commentslikes = np.array([])
+        
+        serializer = serializers.CommentLikeSerializer(commentslikes, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)

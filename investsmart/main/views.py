@@ -10,7 +10,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .helper import createandUpdateAssets,updateLastPrices,createandUpdateNews,updatePrices
 
-
+from api import serializers 
 # Create your views here.
 
 
@@ -76,14 +76,17 @@ class AssetDetailView(View):
 	model = Asset
 	template_name = "main/asset_detail.html"
 
-
 	def get(self,request,*args,**kwargs):
-		slug = kwargs.get('slug')
-		assets = [c.asset_ticker for c in Asset.objects.all()]
-		if slug in assets:
-			asset = Asset.objects.filter(asset_ticker=slug).first()
-			return render(request,template_name=self.template_name,context={"asset": asset})
-
+		if len(kwargs) > 0:
+			slug = kwargs.get('slug')
+			assets = [c.asset_ticker for c in Asset.objects.all()]
+			if slug in assets:
+				asset = Asset.objects.filter(asset_ticker=slug).first()
+				return render(request,template_name=self.template_name,context={"asset": asset})
+		else:
+			all_assets = Asset.objects.all()
+			return render(request,template_name=self.template_name,context={"asset": all_assets}) #can be handled in in HTML 
+		
 		return HttpResponse(f"{slug} does not correspond to anything.")
 
 	def post(self, request, *args, **kwargs):
@@ -95,13 +98,17 @@ class AssetNewsView(View):
 
 
 	def get(self,request,*args,**kwargs):
-		slug = kwargs.get('slug')
-		assets = [c.asset_ticker for c in Asset.objects.all()]
-		if slug in assets:
-			asset = Asset.objects.filter(asset_ticker=slug).first()
-			all_news = News.objects.filter(asset=asset)
-			return render(request,template_name=self.template_name,context={"all_news":all_news,"asset": asset})
-
+		if len(kwargs) > 0:
+			slug = kwargs.get('slug')
+			assets = [c.asset_ticker for c in Asset.objects.all()]
+			if slug in assets:
+				asset = Asset.objects.filter(asset_ticker=slug).first()
+				all_news = News.objects.filter(asset=asset)
+				return render(request,template_name=self.template_name,context={"all_news":all_news,"asset": asset})
+		else:
+			all_news = News.objects.all()
+			asset = None
+			return render(request,template_name=self.template_name,context={"all_news":all_news,"asset": asset}) # asset empty 
 		return HttpResponse(f"{slug} does not correspond to anything.")
 
 	def post(self, request, *args, **kwargs):
@@ -109,9 +116,39 @@ class AssetNewsView(View):
 
 
 
-#def homepage(request):
-#	#return HttpResponse("This is an <strong>InvestSmart</strong> HomePage.")
-#	return 
+
+class CurrentUserFavouriteAssetsView(View): #TODO:serializers
+	def get(self, request, *args, **kwargs):
+
+		user = request.user
+		fav = models.FavouriteAsset.objects.filter(user=user)
+		serializer = serializers.FavouriteAssetSerializer(fav, many=True)
+		return render(request,template_name=self.template_name,context={"favourite_assets":serializer})
+
+class CurrentUserFavouriteCategoryView(View):
+	def get(self, request, *args, **kwargs):
+		user = request.user
+		ret = models.FavouriteCategory.objects.filter(user=user)
+		serializer = serializers.FavouriteCategorySerializer(ret, many=True)
+		return render(request,template_name=self.template_name,context={"favourite_categories":serializer})
+
+class AssetPriceView(View): #TODO:
+	def get(self, request, *args, **kwargs):
+		if len(kwargs) > 0:
+			slug = kwargs.get('slug')
+			assets = [c.asset_ticker for c in models.Asset.objects.all()]
+			if slug in assets:
+				asset = models.Asset.objects.filter(asset_ticker=slug).first()
+				ret = models.AssetPrice.objects.filter(asset=asset)
+				serializer = serializers.AssetPriceSerializer(ret, many=True)
+				return render(request,template_name=self.template_name,context={"prices":serializer})
+		else:
+			prices = models.Asset.objects.all().last_price #only last prices of assets 
+			return render(request,template_name=self.template_name,context={"prices":prices})
+        
+
+		return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 
 
