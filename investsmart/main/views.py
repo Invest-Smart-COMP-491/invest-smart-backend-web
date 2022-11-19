@@ -2,13 +2,13 @@ from django.shortcuts import render,redirect
 from django.views import View
 from django.views.generic import DetailView,ListView
 from django.http import HttpResponse
-from .models import TestModel,AssetCategory,Asset,News
+from .models import AssetCategory,Asset,News
 from django.contrib.auth.forms import UserCreationForm,AuthenticationForm
 from django.contrib.auth import logout, authenticate, login
 from django.contrib import messages 
 
 from django.contrib.auth.decorators import login_required
-from .helper import createandUpdateAssets,updateLastPrices,createandUpdateNews
+from .helper import createandUpdateAssets,updateLastPrices,createandUpdateNews,updatePrices
 
 
 # Create your views here.
@@ -39,8 +39,19 @@ class updateNewsView(View):
 	template_name = "main/home.html"
 
 	def get(self,request,*args,**kwargs):
-		createandUpdateNews()
-		messages.info(request, "News Updated successfully!")
+		# createandUpdateNews() # as I understand it changed to automatically update - delete this view? 
+		messages.info(request, "News will be updated automatically!")
+		return redirect("main:homepage")
+
+	def post(self, request, *args, **kwargs):
+		return HttpResponse("Page Loaded") 
+
+class updatePricesView(View):
+	template_name = "main/home.html"
+
+	def get(self,request,*args,**kwargs):
+		updatePrices()
+		messages.info(request, "Prices Updated successfully!")
 		return redirect("main:homepage")
 
 	def post(self, request, *args, **kwargs):

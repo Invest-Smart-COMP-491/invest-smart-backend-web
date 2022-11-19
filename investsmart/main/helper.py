@@ -4,7 +4,10 @@ from scrape.constants import STOCK_TICKERS_LIST,STOCKS_LIST
 #sys.path.append('../scrape')
 from scrape.scraper import LivePrice
 from scrape.news_scraper import NewsScraper
-from .models import AssetCategory,Asset,News
+from .models import AssetCategory,Asset,News,AssetPrice
+import numpy as np 
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
 
 def createandUpdateAssets():
 	for ticker,name in zip(STOCK_TICKERS_LIST,STOCKS_LIST):
@@ -19,6 +22,7 @@ def createandUpdateAssets():
 			asset = createandUpdateAsset(ticker,name)
 
 		updateLastPrice(ticker)
+		updatePrice(ticker)
 
 
 def createandUpdateAsset(ticker,name):
@@ -39,9 +43,43 @@ def createandUpdateAsset(ticker,name):
 	asset = Asset(asset_ticker = ticker,asset_name = name ,asset_category = CatObj ,photo_link = logo_url , market_size =  market_cap)
 	asset.save()
 
+	asset = updateLastPrice(ticker)
+	updatePrice(ticker)
+
 	return asset
 
+def updatePrices():
+	for ticker in STOCK_TICKERS_LIST:
+		updatePrice(ticker)
+	#map(updatePrice, STOCK_TICKERS_LIST)
 
+
+
+def updatePrice(ticker):
+
+	asset = checkTickerExist(ticker)
+
+	assetPrices = AssetPrice.objects.filter(asset__asset_ticker = ticker).order_by("-date_time")
+	if assetPrices.exists(): # there is no asset price data
+		assetPriceLastDateTime = assetPrices[0].date_time # be careful: start last price  
+	else:
+		assetPriceLastDateTime = datetime.now() - relativedelta(years=2) # to get last 2 years prices 
+
+	try:
+		lp = LivePrice(ticker)
+		price_df = lp.getPrice(start=assetPriceLastDateTime,end=datetime.now())
+
+
+		model_instances = [AssetPrice(
+			asset = asset,
+		    date_time=row['date_time'], 
+		    price = row['Open'],
+		    volume = row['Volume'],
+		) for index, row in price_df.iterrows()]
+
+		AssetPrice.objects.bulk_create(model_instances,ignore_conflicts = True) # update_conflicts=True
+	except:
+		print(ticker," failed to update price")
 
 
 def updateLastPrices():
@@ -57,16 +95,21 @@ def updateLastPrice(ticker):
 		asset.save()
 	except:
 		print(ticker," failed to update price")
+
+	return asset
 		
+def checkTickerExist(ticker):
+	try:
+		asset = Asset.objects.get(asset_ticker = ticker)
+	except:
+		asset = createandUpdateAsset(ticker,STOCKS_LIST[STOCK_TICKERS_LIST.index(ticker)])
+	return asset
 
 def createandUpdateNews(name, ticker, df_news):
 	if "." in ticker: #.B ones have problem - we will handle it later 
 		return
 
-	try:
-		asset = Asset.objects.get(asset_ticker = ticker)
-	except asset.DoesNotExist:
-		asset = createandUpdateAsset(ticker,name)
+	asset = checkTickerExist(ticker)
 
 	model_instances = [News(
 	    title=row['title'],

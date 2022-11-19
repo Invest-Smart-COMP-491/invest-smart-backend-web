@@ -23,6 +23,7 @@ urlpatterns = [
     path("category",views.HomeView.as_view(),name="homepage"), # for now 
     path("updateAssets",views.updateAssetsView.as_view(),name="updateAssets"),
     path("updateNews",views.updateNewsView.as_view(),name="updateNews"),
+    path("updatePrices",views.updatePricesView.as_view(),name="updatePrices"),
     path("<slug:slug>", views.categoryView.as_view(), name="category_detail"),
     path("asset/<slug:slug>", views.AssetDetailView.as_view(), name="asset_detail"),
     path("asset/<slug:slug>/news", views.AssetNewsView.as_view(), name="asset_news"),
