@@ -2,7 +2,7 @@ import os
 from scrape.constants import STOCK_TICKERS_LIST,STOCKS_LIST
 #import sys
 #sys.path.append('../scrape')
-from scrape.scraper import LivePrice
+from scrape.scraper import LivePrice, tickerPrices
 from scrape.news_scraper import NewsScraper
 from .models import AssetCategory,Asset,News,AssetPrice
 import numpy as np 
@@ -81,6 +81,21 @@ def updatePrice(ticker):
 		AssetPrice.objects.bulk_create(model_instances,ignore_conflicts = True) # update_conflicts=True
 	except:
 		print(ticker," failed to update price")
+
+
+def updateLastPricesAll():
+	df_prices = tickerPrices(STOCK_TICKERS_LIST)
+
+	for ticker in STOCK_TICKERS_LIST:
+		try:
+			asset = Asset.objects.get(asset_ticker=ticker)
+			last_price = df_prices[ticker]['Close'][-1]
+			asset.last_price = last_price
+			asset.save()
+		except Exception as e:
+			print(e)
+			print(f"{ticker} failed to update price")
+
 
 
 def updateLastPrices():
