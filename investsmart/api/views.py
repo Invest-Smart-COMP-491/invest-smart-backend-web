@@ -70,3 +70,19 @@ class CommentsApiView(APIView):
         
         serializer = serializers.CommentSerializer(comments, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class CommentsLikesApiView(APIView):
+    def get(self, request, *args, **kwargs):
+        if len(kwargs) > 0:
+            print(kwargs)
+            slug = kwargs.get('slug')
+            #TODO: filters are probably wrong
+            user = models.CustomUser.objects.filter(username=slug).first()
+            asset = models.CommentLike.objects.filter(user=user).first()
+            comments = models.Comment.objects.filter(asset_id=asset)
+            serializer = serializers.CommentSerializer(comments, many=True)
+        else:
+            likes = models.CommentLike.objects.all()
+            serializer = serializers.CommentLikeSerializer(likes, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
