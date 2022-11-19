@@ -17,7 +17,7 @@ for (stock_name, stock_ticker) in zip(STOCKS_LIST, STOCK_TICKERS_LIST):
             # Schedule
             'schedule': 3600.0,
             # Function Arguments
-            'args': (2, stock_name, stock_ticker)
+            'args': (2, stock_name, stock_ticker) #TODO: function arguments is right or? - what is news_df 
         },
     }
     # Python >= 3.5:

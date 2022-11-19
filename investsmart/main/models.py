@@ -13,7 +13,8 @@ from django.urls import reverse
 class AssetCategory(models.Model):
 	category_name = models.CharField(max_length = 200,unique=True)
 	slug = models.SlugField(null=True)
-
+	liked_count = models.IntegerField(default=0) # needed to handle 
+	
 	def __str__(self):
 		return self.category_name
 
@@ -40,6 +41,7 @@ class Asset(models.Model):
 	view_count = models.IntegerField(default=0)
 	photo_link = models.URLField(null=True, blank=True) #URLField is needed or CharField is enough? 
 	market_size = models.FloatField(default=0)
+	liked_count = models.IntegerField(default=0) # needed to handle 
 
 	def __str__(self):
 		return self.asset_name
@@ -73,6 +75,8 @@ class AssetPrice(models.Model):
 			fields=['asset', 'date_time'], name='unique_asset_date'
 			)
 		]
+
+		get_latest_by = "date_time"
 
 		verbose_name_plural = 'AssetPrices'
 
@@ -116,14 +120,3 @@ class CommentLike(models.Model):
 
 	class Meta:
 		verbose_name_plural = 'Commentlikes'
-
-
-class CommentLike(models.Model):
-	comment = models.ForeignKey(Comment,on_delete=models.CASCADE)
-	user = models.ForeignKey(CustomUser,default=None,verbose_name='User',on_delete=models.SET_DEFAULT)
-
-	def __str__(self):
-		return self.user__username + " " + self.comment__comment_id
-
-	class Meta:
-		verbose_name_plural = 'Favourites'

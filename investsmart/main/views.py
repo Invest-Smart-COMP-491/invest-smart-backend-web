@@ -13,7 +13,6 @@ from .helper import createandUpdateAssets,updateLastPrices,createandUpdateNews,u
 from api import serializers 
 # Create your views here.
 
-
 class HomeView(View):
 
 	template_name = "main/home.html"
@@ -143,7 +142,8 @@ class AssetPriceView(View): #TODO:
 				serializer = serializers.AssetPriceSerializer(ret, many=True)
 				return render(request,template_name=self.template_name,context={"prices":serializer})
 		else:
-			prices = models.Asset.objects.all().last_price #only last prices of assets 
+			assets = models.Asset.objects.all() 
+			serializer = serializers.AllAssetPriceSerializer(assets, many=True) #only last prices of assets ,
 			return render(request,template_name=self.template_name,context={"prices":prices})
         
 

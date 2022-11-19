@@ -86,7 +86,7 @@ DATABASES = {
 }
 
 """
-# will be migrated to server - AWS
+# will be used after deploy to server - AWS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',

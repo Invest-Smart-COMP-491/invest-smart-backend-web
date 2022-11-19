@@ -65,14 +65,15 @@ def updatePrice(ticker):
 	else:
 		assetPriceLastDateTime = datetime.now() - relativedelta(years=2) # to get last 2 years prices 
 
+	updateLastPrice(ticker)
+
 	try:
 		lp = LivePrice(ticker)
 		price_df = lp.getPrice(start=assetPriceLastDateTime,end=datetime.now())
 
-
 		model_instances = [AssetPrice(
 			asset = asset,
-		    date_time=row['date_time'], 
+		    date_time=row['date_time'].tz_localize(tz='UTC'), #TODO: changing local time info to the UTC 
 		    price = row['Open'],
 		    volume = row['Volume'],
 		) for index, row in price_df.iterrows()]
@@ -115,7 +116,7 @@ def createandUpdateNews(name, ticker, df_news):
 	    title=row['title'],
 	    description = row['description'],
 	    url = row['url'],
-	    published_date = row['published_date'],
+	    published_date = row['published_date'].tz_localize(tz='UTC'),
 	    publisher =  row['publisher'],
 	    asset = asset
 	) for index, row in df_news.iterrows()]
