@@ -111,7 +111,8 @@ class Comment(models.Model):
 	class Meta:
 		verbose_name_plural = 'Comments'
 
-class CommentLike(models.Model):
+class CommentLike(models.Model): # TODO: dönerken tüm comment likelarını dönmemek için stock da tutabiliriz belki
+	#yada commentlerin idler ile inner join atmak lazım
 	user = models.ForeignKey(CustomUser,default=None,verbose_name='User',on_delete=models.CASCADE)
 	comment = models.ForeignKey(Comment, default=None, verbose_name="Comment", on_delete=models.CASCADE)
 
