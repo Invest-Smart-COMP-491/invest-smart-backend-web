@@ -122,18 +122,19 @@ def checkTickerExist(ticker):
 	return asset
 
 def createandUpdateNews(name, ticker, df_news):
-	if "." in ticker: #.B ones have problem - we will handle it later 
-		return
+	try:
+		asset = checkTickerExist(ticker)
 
-	asset = checkTickerExist(ticker)
+		model_instances = [News(
+			title=row['title'],
+			description = row['description'],
+			url = row['url'],
+			published_date = row['published_date'],
+			publisher =  row['publisher'],
+			asset = asset
+		) for index, row in df_news.iterrows()]
 
-	model_instances = [News(
-	    title=row['title'],
-	    description = row['description'],
-	    url = row['url'],
-	    published_date = row['published_date'].tz_localize(tz='UTC'),
-	    publisher =  row['publisher'],
-	    asset = asset
-	) for index, row in df_news.iterrows()]
-
-	News.objects.bulk_create(model_instances,ignore_conflicts = True) # update_conflicts=True
+		News.objects.bulk_create(model_instances,ignore_conflicts = True) # update_conflicts=True
+	except Exception as e:
+			print(f"{ticker} failed to update news")
+			print(e)

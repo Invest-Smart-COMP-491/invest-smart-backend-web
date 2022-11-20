@@ -6,6 +6,7 @@ from gnews import GNews
 from htmldate import find_date
 from dateutil import parser
 import datetime
+import pytz
 
 scraped_dict = {}
 
@@ -19,9 +20,10 @@ class NewsScraper:
     def CustomFindDate(self,url): # updated 
         date = None
         try:
-            date = find_date(url)
+            html = requests.get(url).content.decode('utf-8')
+            date = find_date(html, outputformat='%Y-%m-%d %H:%M:%S')
         except:
-            date = datetime.datetime.now().date().strftime(format="%Y-%m-%d") # TODO: you can handle in different way  - format is same with above one 
+            date = datetime.datetime.now(pytz.utc).strftime(format="%Y-%m-%d %H:%M:%S") # TODO: you can handle in different way  - format is same with above one 
         return date 
 
     
@@ -79,7 +81,7 @@ class NewsScraper:
         if results.empty: # TODO: handle empty results, I have handled direcly returning null, check it 
             return results
 
-        results['published_date'] = results['published_date'].apply(lambda x: parser.parse(x)) 
+        results['published_date'] = results['published_date'].apply(lambda x: parser.parse(x).replace(tzinfo=pytz.UTC)) 
         return results
 
     def getGoogleNews(self):
@@ -101,7 +103,7 @@ class NewsScraper:
         results['href'] = href
         results['publisher'] = publisher_title
         
-        results['published_date'] = results['published date'].apply(lambda x: parser.parse(x)) 
+        results['published_date'] = results['published date'].apply(lambda x: parser.parse(x).replace(tzinfo=pytz.UTC)) 
         results.drop(['published date'], axis=1, inplace=True)
         return results
 
@@ -117,7 +119,7 @@ class NewsScraper:
         results = pd.DataFrame()
         results['title'] = df['title']
         results['description'] = ""
-        results['published_date'] = df['providerPublishTime'].apply(lambda x: datetime.datetime.fromtimestamp(x))
+        results['published_date'] = df['providerPublishTime'].apply(lambda x: datetime.datetime.utcfromtimestamp(x).replace(tzinfo=pytz.UTC))
         results['url'] = df['link']
         results['publisher'] = df['publisher']
         results['href'] = df['link'].apply(lambda x: x.partition('.com')[0] + ".com")
