@@ -66,7 +66,7 @@ class LivePrice:
         data = yf.download(tickers=self.stock_name, period='1m', interval='1m')
         return data['Open'].iloc[-1]
 
-    def getPrice(self,period="2y",interval="1h",start=datetime.now()-relativedelta(years=2),end=datetime.now()):
+    def getPrice(self,period="2y",interval="1h",start=datetime.now()-relativedelta(years=1),end=datetime.now()):
         data = yf.download(tickers=self.stock_name, start=start,end=end, interval=interval)[['Open', 'Volume']]
         data = data.reset_index().rename(columns = {'index':'date_time'})
         return data

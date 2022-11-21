@@ -63,7 +63,7 @@ def updatePrice(ticker):
 	if assetPrices.exists(): # there is no asset price data
 		assetPriceLastDateTime = assetPrices[0].date_time # be careful: start last price  
 	else:
-		assetPriceLastDateTime = datetime.now() - relativedelta(years=2) # to get last 2 years prices 
+		assetPriceLastDateTime = datetime.now() - relativedelta(years=1) # to get last 2 years prices 
 
 	updateLastPrice(ticker)
 
