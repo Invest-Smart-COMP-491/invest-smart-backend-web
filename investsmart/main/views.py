@@ -144,10 +144,8 @@ class AssetPriceView(View): #TODO:
 		else:
 			assets = models.Asset.objects.all() 
 			serializer = serializers.AllAssetPriceSerializer(assets, many=True) #only last prices of assets ,
-			return render(request,template_name=self.template_name,context={"prices":prices})
-        
-
-		return Response(serializer.data, status=status.HTTP_200_OK)
+			return render(request,template_name=self.template_name,context={"prices":serializer})
+		return HttpResponse(f"{slug} does not correspond to anything.")
 
 
 
