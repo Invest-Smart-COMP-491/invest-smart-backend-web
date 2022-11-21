@@ -26,3 +26,5 @@ python-dotenv
 pymongo
 sqlalchemy
 gevent
+django_rest_framework
+pytz

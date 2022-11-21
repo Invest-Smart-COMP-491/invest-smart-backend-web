@@ -31,9 +31,12 @@ to run: redis-server
 **Windows:** <br/>
 python -m celery -A investsmart worker -l info -P gevent <br/>
 python -m celery -A investsmart beat --loglevel=info <br/>
+<br/>
+Clear Task Queue: <br/>
+python -m celery -A investsmart purge <br/>
 
 **Linux:** <br/>
 pkill -f "celery worker" <br/>
-celery -A simpletask worker -l info --logfile=celery.log --detach <br/>
-celery -A simpletask beat -l info --logfile=celery.beat.log --detach <br/>
+celery -A simpletask worker -l info --logfile=celery.log <br/>
+celery -A simpletask beat -l info --logfile=celery.beat.log <br/>
 

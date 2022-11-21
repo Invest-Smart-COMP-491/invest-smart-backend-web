@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     "main.apps.MainConfig",
     "accounts.apps.AccountsConfig",
     "tinymce",
+    'rest_framework',
+    'api'
 ]
 
 MIDDLEWARE = [
@@ -84,7 +86,7 @@ DATABASES = {
 }
 
 """
-# will be migrated to server - AWS
+# will be used after deploy to server - AWS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
