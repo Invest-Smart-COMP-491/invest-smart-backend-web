@@ -102,7 +102,7 @@ class AssetsApiView(APIView):
     queryset = Asset.objects.all()
     serializer_class = AssetSerializer
 
-    def get(self, request, *args, **kwargs):
+    """def get(self, request, *args, **kwargs):
 
         if len(kwargs) > 0:
             #print(kwargs)
@@ -114,7 +114,7 @@ class AssetsApiView(APIView):
             assets = models.Asset.objects.all()
         
         serializer = serializers.AssetSerializer(assets, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.data, status=status.HTTP_200_OK)"""
 
 class CommentsApiView(APIView):
     def get(self, request, *args, **kwargs):
