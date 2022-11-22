@@ -87,39 +87,6 @@ class LivePrice:
         return self.stock.news
 
 
-class DBUpdater():
-    def __init__(self):
-        pass
-
-    def updateAllLastPrices(self):
-        map(self.updateLastPrice, STOCK_TICKERS_LIST)
-
-        """for st in STOCKS_LIST:
-            lp = LivePrice(st)
-            last_price = lp.getLastPrice()
-            self.updateLastPrice(st, last_price)"""
-
-    def updateLastPrice(self, ticker):
-        lp = LivePrice(ticker)
-        last_price = lp.getLastPrice()
-        db.update(ticker, last_price)
-
-    def updateAllAnalystTargets(self):
-        map(self.updateAnalystTargets, STOCK_TICKERS_LIST)
-
-    def updateAnalystTargets(self, ticker):
-        lp = LivePrice(ticker)
-        targets = lp.getLastPrice()
-
-        """{'date': '2022-10-28',
-         'category': 'Reiterated',
-         'analyst': 'Wedbush',
-         'rating': 'Outperform',
-         'target_from': 220.0,
-         'target_to': 200.0}"""
-        for tar in targets:
-            db.update(tar)
-
 
 class NewsAPI:
     def __init__(self):
