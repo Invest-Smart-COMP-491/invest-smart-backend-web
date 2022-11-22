@@ -86,8 +86,22 @@ class CategoryApiView(APIView):
         serializer = serializers.CategorySerializer(categories, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+from rest_framework import generics
+from main.models import Asset
+from .serializers import AssetSerializer
+from rest_framework import filters
 
+"""class QuestionsAPIView(generics.ListCreateAPIView):
+    search_fields = ['asset_name', 'asset_ticker']
+    filter_backends = (filters.SearchFilter,)
+    queryset = Asset.objects.all()
+    serializer_class = AssetSerializer"""
 class AssetsApiView(APIView):
+    search_fields = ['asset_name', 'asset_ticker']
+    filter_backends = (filters.SearchFilter,)
+    queryset = Asset.objects.all()
+    serializer_class = AssetSerializer
+
     def get(self, request, *args, **kwargs):
 
         if len(kwargs) > 0:
@@ -128,3 +142,5 @@ class CommentsLikesApiView(APIView):
         
         serializer = serializers.CommentLikeSerializer(commentslikes, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
