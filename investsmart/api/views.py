@@ -2,6 +2,7 @@ from django.shortcuts import render
 
 # Create your views here.
 from rest_framework.views import APIView
+from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import permissions
@@ -96,25 +97,11 @@ from rest_framework import filters
     filter_backends = (filters.SearchFilter,)
     queryset = Asset.objects.all()
     serializer_class = AssetSerializer"""
-class AssetsApiView(APIView):
+class AssetsApiView(generics.ListAPIView):
     search_fields = ['asset_name', 'asset_ticker']
     filter_backends = (filters.SearchFilter,)
     queryset = Asset.objects.all()
     serializer_class = AssetSerializer
-
-    """def get(self, request, *args, **kwargs):
-
-        if len(kwargs) > 0:
-            #print(kwargs)
-            # category_id = kwargs.get('category_id') # category_id also can be used 
-            slug = kwargs.get('slug') 
-            assets = models.Asset.objects.filter(asset_category__slug=slug)
-
-        else:
-            assets = models.Asset.objects.all()
-        
-        serializer = serializers.AssetSerializer(assets, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)"""
 
 class CommentsApiView(APIView):
     def get(self, request, *args, **kwargs):
