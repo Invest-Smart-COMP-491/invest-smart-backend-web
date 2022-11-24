@@ -53,6 +53,20 @@ def updatePrices():
 		updatePrice(ticker)
 	#map(updatePrice, STOCK_TICKERS_LIST)
 
+def getAssetPrice(ticker):
+	asset = checkTickerExist(ticker)
+	lp = LivePrice(ticker)
+	price_df = lp.getPrice(interval="1h",start=datetime.now()-relativedelta(years=1),end=datetime.now()) #this is 1 year - can change it
+	model_instances = [AssetPrice(
+		asset = asset,
+		date_time=row['date_time'].tz_localize(tz='UTC'), #TODO: changing local time info to the UTC 
+		price = row['Open'],
+		volume = row['Volume'],
+		) for index, row in price_df.iterrows()]
+
+	return model_instances
+
+
 
 
 def updatePrice(ticker):

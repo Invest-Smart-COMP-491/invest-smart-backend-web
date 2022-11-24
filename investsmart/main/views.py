@@ -8,7 +8,7 @@ from django.contrib.auth import logout, authenticate, login
 from django.contrib import messages 
 
 from django.contrib.auth.decorators import login_required
-from .helper import createandUpdateAssets,updateLastPrices,createandUpdateNews,updatePrices
+from .helper import createandUpdateAssets,updateLastPrices,createandUpdateNews,updatePrices,getAssetPrice
 
 from api import serializers 
 # Create your views here.
@@ -137,14 +137,15 @@ class AssetPriceView(View): #TODO:
 			slug = kwargs.get('slug')
 			assets = [c.asset_ticker for c in models.Asset.objects.all()]
 			if slug in assets:
-				asset = models.Asset.objects.filter(asset_ticker=slug).first()
-				ret = models.AssetPrice.objects.filter(asset=asset)
-				serializer = serializers.AssetPriceSerializer(ret, many=True)
-				return render(request,template_name=self.template_name,context={"prices":serializer})
+				#asset = models.Asset.objects.filter(asset_ticker=slug).first()
+				#ret = models.AssetPrice.objects.filter(asset=asset)
+				assetPrices = getAssetPrice(slug)
+				serializer = serializers.AssetPriceSerializer(assetPrices, many=True)
+				return render(request,template_name=self.template_name,context={"prices":serializer}) # returns an object
 		else:
 			assets = models.Asset.objects.all() 
 			serializer = serializers.AllAssetPriceSerializer(assets, many=True) #only last prices of assets ,
-			return render(request,template_name=self.template_name,context={"prices":serializer})
+			return render(request,template_name=self.template_name,context={"prices":serializer}) # returns object list
 		return HttpResponse(f"{slug} does not correspond to anything.")
 
 

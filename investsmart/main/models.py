@@ -1,9 +1,9 @@
 from django.db import models
 from datetime import datetime
 from django.utils import timezone
-from tinymce.models import HTMLField
+#from tinymce.models import HTMLField
 from accounts.models import CustomUser
-from django.contrib.postgres.fields import ArrayField # when migrating models to postgreSQL, we will implement arrayField
+from django.contrib.postgres.fields import ArrayField #when migrating models to postgreSQL, we will implement arrayField
 from django.urls import reverse
 
 # Create your models here.

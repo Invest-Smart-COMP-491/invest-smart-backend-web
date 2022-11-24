@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import permissions
 from main import models
+from main import helper
 from accounts import models as accountModels
 from main.models import CommentLike
 from . import serializers
@@ -60,19 +61,11 @@ class PriceApiView(APIView):
             slug = kwargs.get('slug')
             assets = [c.asset_ticker for c in models.Asset.objects.all()]
             if slug in assets:
-                asset = models.Asset.objects.filter(asset_ticker=slug).first()
-                assetPrices = models.AssetPrice.objects.filter(asset=asset)
+                #asset = models.Asset.objects.filter(asset_ticker=slug).first()
+                #assetPrices = models.AssetPrice.objects.filter(asset=asset)
+                assetPrices = helper.getAssetPrice(slug)  # do not save to the database directly gets from api 
                 serializer = serializers.AssetPriceSerializer(assetPrices, many=True)
-
         else:
-            #TODO: do not return all prices only last prices is enough 
-            #assetPrices = models.AssetPrice.objects.order_by("-date_time").distinct("asset__asset_ticker").all() # distinct not supported in sqlite3 - can be used for postgre 
-
-            # for now - get number of assets(n) and get ordered n entry 
-            #p = models.Asset.objects.count()
-            #assetPrices = models.AssetPrice.objects.order_by("-date_time","asset__asset_ticker").all()[:p]
-
-            print("--------------------")
             assets = models.Asset.objects.all()
             serializer = serializers.AllAssetPriceSerializer(assets, many=True)
         
