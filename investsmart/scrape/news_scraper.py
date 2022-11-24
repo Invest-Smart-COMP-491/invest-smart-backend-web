@@ -11,14 +11,6 @@ from newspaper import Article
 
 scraped_dict = {}
 
-def scrape(url):
-    article = Article(url)
-    article.download()
-    article.parse()
-    # nltk.download('punkt')  # 1 time download of the sentence tokenizer
-    article.nlp()
-    return article
-
 class NewsScraper:
     def __init__(self, stock_name, stock_ticker):
         self.stock_name = stock_name
@@ -35,6 +27,12 @@ class NewsScraper:
             date = datetime.datetime.now(pytz.utc).strftime(format="%Y-%m-%d %H:%M:%S") # TODO: you can handle in different way  - format is same with above one 
         return date 
 
+    def scrape(self, url):
+        article = Article(url)
+        article.download()
+        article.parse()
+        article.nlp()
+        return article
     
 
     def getAllNews(self):
@@ -57,9 +55,10 @@ class NewsScraper:
 
         for row in results.itertuples():
             try:
-                article = scrape(row.url)
+                article = self.scrape(row.url)
                 if row.thumbnail is None or row.thumbnail == "":
                     results.at[row.Index, 'thumbnail'] = article.top_image
+                    results.at[row.Index, 'summary'] = article.summary
             except:
                 print(f"forbidden for {row.url}")
 
@@ -88,7 +87,7 @@ class NewsScraper:
 
                 s_new = {
                     "title": item.find('div', attrs={'class': 'Yfwt5'}).text,
-                    "description": "",
+                    "summary": "",
                     "published_date": self.CustomFindDate(url),  # item.find('div', attrs={'class': 'Adak'}).text, # updated 
                     "url": url,
                     "publisher": item.find('div', attrs={'class': 'sfyJob'}).text,
@@ -104,7 +103,7 @@ class NewsScraper:
 
     def getGoogleNews(self):
         results = pd.DataFrame()
-        google_news = GNews(max_results=20)
+        google_news = GNews()
         try:
             news = google_news.get_news(self.stock_name)
             results = pd.DataFrame().from_dict(news)
@@ -116,8 +115,9 @@ class NewsScraper:
             results['href'] = href
             results['publisher'] = publisher_title
             results['published_date'] = results['published date'].apply(lambda x: parser.parse(x).replace(tzinfo=pytz.UTC)) 
-            results.drop(['published date'], axis=1, inplace=True)
+            results.drop(['published date', "description"], axis=1, inplace=True)
             results['thumbnail'] = ""
+            results['summary'] = ""
             results['title'] = results['title'].apply(lambda x: x[:x.rfind(" - ")] if x.rfind(" - ")>0 else x)
         except Exception as e:
             print(f"Error fetching news with Google news: {self.stock_ticker}: {e}")
@@ -130,7 +130,7 @@ class NewsScraper:
         try:
             df = pd.DataFrame().from_dict(stock.get_news())
             results['title'] = df['title']
-            results['description'] = ""
+            results['summary'] = ""
             results['published_date'] = df['providerPublishTime'].apply(lambda x: datetime.datetime.utcfromtimestamp(x).replace(tzinfo=pytz.UTC))
             results['url'] = df['link']
             results['publisher'] = df['publisher']
@@ -148,10 +148,10 @@ class NewsScraper:
         return results
         
 
-start = datetime.datetime.now()
+"""start = datetime.datetime.now()
 #TODO: Debug et thumbnail linki eksikleri doldur
 df = NewsScraper("Apple", "AAPL").getAllNews()
 end = datetime.datetime.now()
 
 print(end-start)
-print(df)
+print(df)"""

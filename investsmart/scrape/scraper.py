@@ -12,14 +12,6 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
 
-def scrape(url):
-    article = Article(url)
-    article.download()
-    article.parse()
-    # nltk.download('punkt')  # 1 time download of the sentence tokenizer
-    article.nlp()
-    return article
-
 def tickerPrices(ticker_list):
     data = yf.download(  # or pdr.get_data_yahoo(...
         # tickers list or string as well

@@ -5,7 +5,7 @@ class NewsSerializer(serializers.ModelSerializer):
     asset_ticker = serializers.CharField(source='asset.asset_ticker')
     class Meta:
         model = models.News
-        fields = ["title", "description", "url", "published_date", "publisher", "asset_ticker"]
+        fields = ["title", "url", "published_date", "publisher", "asset_ticker", "thumbnail", "summary"]
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:

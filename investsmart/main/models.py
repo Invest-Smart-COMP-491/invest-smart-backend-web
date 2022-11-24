@@ -83,11 +83,12 @@ class AssetPrice(models.Model):
 
 class News(models.Model):
 	title = models.CharField(max_length = 200,unique=True)
-	description = models.TextField(null=True, blank=True)
 	url = models.URLField(default=None) 
 	published_date = models.DateTimeField("published date",default=timezone.now)
 	publisher = models.CharField(max_length = 200)
 	asset = models.ForeignKey(Asset, default=None, verbose_name="Asset", on_delete=models.SET_DEFAULT)
+	thumbnail = models.URLField(default=None, null=True)
+	summary = models.TextField(null=True, blank=True)
 	#mentioned_asset = models.ManyToManyField(Asset)
 
 	def __str__(self):
