@@ -11,6 +11,9 @@ from main import helper
 from accounts import models as accountModels
 from main.models import CommentLike
 from . import serializers
+from rest_framework import permissions
+from rest_framework import views
+from rest_framework.response import Response
 
 import numpy as np
 
@@ -123,11 +126,6 @@ class CommentsLikesApiView(APIView):
         serializer = serializers.CommentLikeSerializer(commentslikes, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-
-from rest_framework import permissions
-from rest_framework import views
-from rest_framework.response import Response
-from . import serializers
 
 class LoginView(views.APIView):
     # This view should be accessible also for unauthenticated users.

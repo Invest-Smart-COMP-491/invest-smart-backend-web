@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from main import models
+from django.contrib.auth import authenticate
 
 class NewsSerializer(serializers.ModelSerializer):
     asset_ticker = serializers.CharField(source='asset.asset_ticker')
@@ -57,10 +58,6 @@ class AllAssetPriceSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Asset
         fields = ["asset_name", "asset_ticker", "last_price"]
-
-#TODO: Refactor
-from django.contrib.auth import authenticate
-from rest_framework import serializers
 
 class LoginSerializer(serializers.Serializer):
     """
