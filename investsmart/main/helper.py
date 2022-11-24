@@ -15,14 +15,13 @@ def createandUpdateAssets():
 		if "." in ticker: #.B ones have problem - we will handle it later 
 			continue
 
-
 		try:
 			asset = Asset.objects.get(asset_ticker = ticker)
 		except asset.DoesNotExist:
 			asset = createandUpdateAsset(ticker,name)
 
 		updateLastPrice(ticker)
-		updatePrice(ticker)
+		#updatePrice(ticker)
 
 
 def createandUpdateAsset(ticker,name):
@@ -44,13 +43,14 @@ def createandUpdateAsset(ticker,name):
 	asset.save()
 
 	asset = updateLastPrice(ticker)
-	updatePrice(ticker)
+	# updatePrice(ticker)
 
 	return asset
 
-def updatePrices():
-	for ticker in STOCK_TICKERS_LIST:
-		updatePrice(ticker)
+def updatePrices(): # it does nothing for now - will be deleted - no database object for assetPrice 
+	#for ticker in STOCK_TICKERS_LIST:
+	pass
+		#updatePrice(ticker)
 	#map(updatePrice, STOCK_TICKERS_LIST)
 
 def getAssetPrice(ticker):
@@ -65,8 +65,6 @@ def getAssetPrice(ticker):
 		) for index, row in price_df.iterrows()]
 
 	return model_instances
-
-
 
 
 def updatePrice(ticker):
@@ -117,7 +115,7 @@ def updateLastPrices():
 
 
 def updateLastPrice(ticker):
-	asset = Asset.objects.get(asset_ticker=ticker)
+	asset = checkTickerExist(ticker)
 	lp = LivePrice(ticker)
 	try:
 		last_price = lp.getLastPrice()

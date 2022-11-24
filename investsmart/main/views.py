@@ -139,7 +139,7 @@ class AssetPriceView(View): #TODO:
 			if slug in assets:
 				#asset = models.Asset.objects.filter(asset_ticker=slug).first()
 				#ret = models.AssetPrice.objects.filter(asset=asset)
-				assetPrices = getAssetPrice(slug)
+				assetPrices = getAssetPrice(slug) # do not save to the database directly gets from api 
 				serializer = serializers.AssetPriceSerializer(assetPrices, many=True)
 				return render(request,template_name=self.template_name,context={"prices":serializer}) # returns an object
 		else:
