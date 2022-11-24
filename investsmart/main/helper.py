@@ -48,7 +48,8 @@ def createandUpdateAsset(ticker,name):
 	return asset
 
 def updatePrices(): # it does nothing for now - will be deleted - no database object for assetPrice 
-	for ticker in STOCK_TICKERS_LIST:
+	#for ticker in STOCK_TICKERS_LIST:
+	pass
 		#updatePrice(ticker)
 	#map(updatePrice, STOCK_TICKERS_LIST)
 
