@@ -17,4 +17,9 @@ urlpatterns = [
     path("commentLikes/<slug:slug>", views.CommentsLikesApiView.as_view(), name="comments_likes"),
     path("assets/fav", views.CurrentUserFavouriteAssetsApiView.as_view(), name="favourite_assets"),
     path("assets/favCategory", views.CurrentUserFavouriteCategoryApiView.as_view(), name="favourite_categories"),
+    path('admin/', admin.site.urls),
+    path('login/', views.LoginView.as_view()),
 ]
+#try account
+#berke
+#40004000invest
