@@ -2,6 +2,7 @@ from django.shortcuts import render
 
 # Create your views here.
 from rest_framework.views import APIView
+from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import permissions
@@ -79,21 +80,21 @@ class CategoryApiView(APIView):
         serializer = serializers.CategorySerializer(categories, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+from rest_framework import generics
+from main.models import Asset
+from .serializers import AssetSerializer
+from rest_framework import filters
 
-class AssetsApiView(APIView):
-    def get(self, request, *args, **kwargs):
-
-        if len(kwargs) > 0:
-            #print(kwargs)
-            # category_id = kwargs.get('category_id') # category_id also can be used 
-            slug = kwargs.get('slug') 
-            assets = models.Asset.objects.filter(asset_category__slug=slug)
-
-        else:
-            assets = models.Asset.objects.all()
-        
-        serializer = serializers.AssetSerializer(assets, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+"""class QuestionsAPIView(generics.ListCreateAPIView):
+    search_fields = ['asset_name', 'asset_ticker']
+    filter_backends = (filters.SearchFilter,)
+    queryset = Asset.objects.all()
+    serializer_class = AssetSerializer"""
+class AssetsApiView(generics.ListAPIView):
+    search_fields = ['asset_name', 'asset_ticker']
+    filter_backends = (filters.SearchFilter,)
+    queryset = Asset.objects.all()
+    serializer_class = AssetSerializer
 
 class CommentsApiView(APIView):
     def get(self, request, *args, **kwargs):
@@ -121,3 +122,5 @@ class CommentsLikesApiView(APIView):
         
         serializer = serializers.CommentLikeSerializer(commentslikes, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
