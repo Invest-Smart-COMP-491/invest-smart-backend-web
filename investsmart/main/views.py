@@ -81,7 +81,10 @@ class AssetDetailView(View):
 			assets = [c.asset_ticker for c in models.Asset.objects.all()]
 			if slug in assets:
 				asset = models.Asset.objects.filter(asset_ticker=slug).first()
-				return render(request,template_name=self.template_name,context={"asset": asset})
+				all_news = models.News.objects.filter(asset=asset)
+				assetPrices = getAssetPrice(slug)  # do not save to the database directly gets from api 
+				assetPrices = serializers.AssetPriceSerializer(assetPrices, many=True)
+				return render(request,template_name=self.template_name,context={"asset": asset, "all_news":all_news,"asset_prices":assetPrices})
 		else:
 			all_assets = models.Asset.objects.all()
 			return render(request,template_name=self.template_name,context={"asset": all_assets}) #can be handled in in HTML 
@@ -89,7 +92,64 @@ class AssetDetailView(View):
 		return HttpResponse(f"{slug} does not correspond to anything.")
 
 	def post(self, request, *args, **kwargs):
-		return HttpResponse("Page Loaded") 
+
+		if request.POST["action"] == "favouriteAsset":
+			response_data = {}
+			asset_ticker = request.POST.get("asset_ticker")
+			asset = models.Asset.objects.filter(asset_ticker=asset_ticker).first()
+			user = request.user
+			favouriteAssetObj = models.FavouriteAsset.objects.get_or_create(user=user,asset=asset)
+			asset.favourite_count = asset.favourite_count + 1 
+			asset.save()
+		elif request.POST["action"] == "unfavouriteAsset":
+			response_data = {}
+			asset_ticker = request.POST.get("asset_ticker")
+			asset = models.Asset.objects.filter(asset_ticker=asset_ticker).first()
+			user = request.user
+			models.FavouriteAsset.objects.filter(user=user,asset=asset).delete()
+			asset.favourite_count = asset.favourite_count - 1 
+			asset.save()
+		elif request.POST["action"] == "likeComment":
+			response_data = {}
+			comment_id = request.POST.get("comment_id")
+			comment = models.Comment.objects.filter(id=comment_id).first()
+			user = request.user
+			comment.liked_users.add(user)
+			comment.like_count = comment.like_count + 1 
+			comment.save()
+		elif request.POST["action"] == "unlikeComment":
+			response_data = {}
+			comment_id = request.POST.get("comment_id")
+			comment = models.Comment.objects.filter(id=comment_id).first()
+			user = request.user
+			comment.liked_users.remove(user)
+			comment.like_count = comment.like_count - 1 
+			comment.save()
+		elif request.POST["action"] == "favouriteAssetCategory": # TODO: can be moved/copy to the category view if needed 
+			response_data = {}
+			asset_category_slug = request.POST.get("asset_category_slug")
+			assetCategory = models.AssetCategory.objects.filter(slug=asset_category_slug).first()
+			user = request.user
+			favouriteCategoryObj = models.FavouriteCategory.objects.get_or_create(user=user,asset_category=assetCategory)
+			assetCategory.favourite_count = assetCategory.favourite_count + 1 
+			assetCategory.save()
+		elif request.POST["action"] == "unfavouriteAssetCategory":
+			response_data = {}
+			asset_category_slug = request.POST.get("asset_category_slug")
+			assetCategory = models.AssetCategory.objects.filter(slug=asset_category_slug).first()
+			user = request.user
+			models.FavouriFavouriteCategoryteAsset.objects.filter(user=user,asset_category=assetCategory).delete()
+			assetCategory.favourite_count = assetCategory.favourite_count - 1 
+			assetCategory.save()
+
+
+
+
+
+
+
+
+		return HttpResponse("Page Loaded") #TODO: json will be returned 
 
 class AssetNewsView(View):
 	model = models.Asset
@@ -113,9 +173,6 @@ class AssetNewsView(View):
 	def post(self, request, *args, **kwargs):
 		return HttpResponse("Page Loaded") 
 
-
-
-
 class CurrentUserFavouriteAssetsView(View): #TODO:serializers
 	def get(self, request, *args, **kwargs):
 
@@ -131,7 +188,7 @@ class CurrentUserFavouriteCategoryView(View):
 		serializer = serializers.FavouriteCategorySerializer(ret, many=True)
 		return render(request,template_name=self.template_name,context={"favourite_categories":serializer})
 
-class AssetPriceView(View): #TODO:
+class AssetPriceView(View):
 	def get(self, request, *args, **kwargs):
 		if len(kwargs) > 0:
 			slug = kwargs.get('slug')
@@ -139,7 +196,7 @@ class AssetPriceView(View): #TODO:
 			if slug in assets:
 				#asset = models.Asset.objects.filter(asset_ticker=slug).first()
 				#ret = models.AssetPrice.objects.filter(asset=asset)
-				assetPrices = getAssetPrice(slug) # do not save to the database directly gets from api 
+				assetPrices = getAssetPrice(slug)  # do not save to the database directly gets from api 
 				serializer = serializers.AssetPriceSerializer(assetPrices, many=True)
 				return render(request,template_name=self.template_name,context={"prices":serializer}) # returns an object
 		else:
