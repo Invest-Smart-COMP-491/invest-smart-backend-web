@@ -13,7 +13,8 @@ from django.urls import reverse
 class AssetCategory(models.Model):
 	category_name = models.CharField(max_length = 200,unique=True)
 	slug = models.SlugField(null=True)
-	liked_count = models.IntegerField(default=0) # needed to handle 
+	like_count = models.IntegerField(default=0) # we can count liked users 
+	liked_users = models.ManyToManyField(CustomUser,symmetrical=False,blank=True)
 	
 	def __str__(self):
 		return self.category_name
@@ -41,7 +42,7 @@ class Asset(models.Model):
 	view_count = models.IntegerField(default=0)
 	photo_link = models.URLField(null=True, blank=True) #URLField is needed or CharField is enough? 
 	market_size = models.FloatField(default=0)
-	liked_count = models.IntegerField(default=0) # needed to handle 
+	like_count = models.IntegerField(default=0) # needed to handle 
 
 	def __str__(self):
 		return self.asset_name
@@ -58,6 +59,16 @@ class FavouriteAsset(models.Model):
 		return self.user__username + " " + self.asset__asset_ticker
 
 	class Meta:
+
+		constraints = [
+		models.UniqueConstraint(
+			fields=['asset', 'user'], name='unique_asset_user'
+			)
+		]
+
+		get_latest_by = "favourite_date"
+
+
 		verbose_name_plural = 'FavouriteAssets'
 
 class AssetPrice(models.Model):
@@ -88,7 +99,7 @@ class News(models.Model):
 	published_date = models.DateTimeField("published date",default=timezone.now)
 	publisher = models.CharField(max_length = 200)
 	asset = models.ForeignKey(Asset, default=None, verbose_name="Asset", on_delete=models.SET_DEFAULT)
-	#mentioned_asset = models.ManyToManyField(Asset)
+	mentioned_asset = models.ManyToManyField(Asset,related_name="mentioned_asset",symmetrical=False,blank=True)
 
 	def __str__(self):
 		return self.title
@@ -102,8 +113,9 @@ class Comment(models.Model):
 	comment_text = models.TextField()
 	date_time = models.DateTimeField("date published",default=timezone.now)
 	parent_comment = models.ForeignKey("self",on_delete=models.CASCADE) #cascading or keeping comment? 
-	like_count = models.IntegerField(default=0) # needed to handle 
 	imported_from = models.CharField(max_length = 200)
+	liked_users = models.ManyToManyField(CustomUser,related_name="liked_users",symmetrical=False,blank=True)
+	like_count = models.IntegerField(default=0) # we can count liked users  
 
 	def __str__(self):
 		return self.comment_text
@@ -111,6 +123,8 @@ class Comment(models.Model):
 	class Meta:
 		verbose_name_plural = 'Comments'
 
+
+"""
 class CommentLike(models.Model): # TODO: dönerken tüm comment likelarını dönmemek için stock da tutabiliriz belki
 	#yada commentlerin idler ile inner join atmak lazım
 	user = models.ForeignKey(CustomUser,default=None,verbose_name='User',on_delete=models.CASCADE)
@@ -121,3 +135,4 @@ class CommentLike(models.Model): # TODO: dönerken tüm comment likelarını dö
 
 	class Meta:
 		verbose_name_plural = 'Commentlikes'
+"""
