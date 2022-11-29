@@ -18,13 +18,13 @@ class NewsScraper:
         self.news_functions = [self.getGoogleNews, self.getGoogleFinanceNews, self.getYahooNews]
 
 
-    def CustomFindDate(self,url): # updated 
+    def CustomFindDate(self,url): 
         date = None
         try:
             html = requests.get(url).content.decode('utf-8')
-            date = find_date(html, outputformat='%Y-%m-%d %H:%M:%S')
-        except:
-            date = datetime.datetime.now(pytz.utc).strftime(format="%Y-%m-%d %H:%M:%S") # TODO: you can handle in different way  - format is same with above one 
+            date = parser.parse(find_date(html, outputformat='%Y-%m-%d %H:%M:%S')).replace(tzinfo=pytz.UTC)
+        except Exception as e:
+            date = datetime.datetime.now(pytz.UTC) 
         return date 
 
     def scrape(self, url):
@@ -35,13 +35,12 @@ class NewsScraper:
         return article
     
 
-    def getAllNews(self):
+    def getAllNews(self, period):
         df_news = []
 
         for news_function in self.news_functions:
             try:
                 df = news_function()
-                #print(df)
                 if not df.empty:
                     df_news.append(df)
             except Exception as e:
@@ -53,6 +52,8 @@ class NewsScraper:
             results = pd.concat(df_news)
             results = results.drop_duplicates(subset='url').reset_index().drop(['index'], axis=1)
 
+        results = results[results['published_date'] >= datetime.datetime.now(pytz.utc) - period]
+        results.reset_index(drop=True, inplace=True)
         for row in results.itertuples():
             try:
                 article = self.scrape(row.url)
@@ -96,7 +97,6 @@ class NewsScraper:
                 }
                 news.append(s_new)
             results = pd.DataFrame().from_dict(news)
-            results['published_date'] = results['published_date'].apply(lambda x: parser.parse(x).replace(tzinfo=pytz.UTC)) 
         except Exception as e:
             print(f"Error fetching news with Google Finance News: {self.stock_ticker}: {e}")
         return results
@@ -150,7 +150,7 @@ class NewsScraper:
 
 """start = datetime.datetime.now()
 #TODO: Debug et thumbnail linki eksikleri doldur
-df = NewsScraper("Apple", "AAPL").getAllNews()
+df = NewsScraper("Apple", "AAPL").getAllNews(datetime.timedelta(hours=2))
 end = datetime.datetime.now()
 
 print(end-start)

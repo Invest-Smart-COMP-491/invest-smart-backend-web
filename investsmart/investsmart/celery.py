@@ -1,5 +1,6 @@
 import os
 from celery import Celery
+import datetime
 from scrape.constants import STOCK_TICKERS_LIST, STOCKS_LIST
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'investsmart.settings')
@@ -13,7 +14,7 @@ for (stock_name, stock_ticker) in zip(STOCKS_LIST, STOCK_TICKERS_LIST):
         'update-news-'+stock_name: {
             'task': 'upload_news',
             'schedule': 3600.0,
-            'args': (2, stock_name, stock_ticker)
+            'args': (datetime.timedelta(hours=2), stock_name, stock_ticker)
         },
     }
     celery_app.conf.beat_schedule = {**celery_app.conf.beat_schedule, **us_sched}
