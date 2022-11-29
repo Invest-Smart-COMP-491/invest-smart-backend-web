@@ -8,6 +8,7 @@ from dateutil import parser
 import datetime
 import pytz
 from newspaper import Article
+import swifter
 
 scraped_dict = {}
 
@@ -62,24 +63,14 @@ class NewsScraper:
         results = results[results['published_date'] >= datetime.datetime.now(pytz.utc) - period]
         results.reset_index(drop=True, inplace=True)
 
-        results.articles = results.url
+        articles = results.url
 
-        import swifter
-        start = datetime.datetime.now()
-        results.articles = results.articles.swifter.apply(lambda x: self.scrape(x))
-        end = datetime.datetime.now()
+        
+        articles = articles.swifter.apply(lambda x: self.scrape(x))
+        
+        results['thumbnail'] = articles.apply(lambda x: x.top_image)
+        results['summary'] = articles.apply(lambda x: x.summary)
 
-        print("scrape", end - start)
-        start = datetime.datetime.now()
-        results['thumbnail'] = results.articles.apply(lambda x: x.top_image)
-        end = datetime.datetime.now()
-
-        print("top", end - start)
-        start = datetime.datetime.now()
-        results['summary'] = results.articles.apply(lambda x: x.summary)
-        end = datetime.datetime.now()
-
-        print("top", end - start)
         """for row in results.itertuples():
             try:
                 article = self.scrape(row.url)
