@@ -29,8 +29,15 @@ class NewsScraper:
 
     def scrape(self, url):
         article = Article(url)
-        article.download()
-        article.parse()
+        try:
+            article.download()
+        except:
+            return article
+
+        try:
+            article.parse()
+        except:
+            return article
         article.nlp()
         return article
     
@@ -54,14 +61,33 @@ class NewsScraper:
 
         results = results[results['published_date'] >= datetime.datetime.now(pytz.utc) - period]
         results.reset_index(drop=True, inplace=True)
-        for row in results.itertuples():
+
+        results.articles = results.url
+
+        import swifter
+        start = datetime.datetime.now()
+        results.articles = results.articles.swifter.apply(lambda x: self.scrape(x))
+        end = datetime.datetime.now()
+
+        print("scrape", end - start)
+        start = datetime.datetime.now()
+        results['thumbnail'] = results.articles.apply(lambda x: x.top_image)
+        end = datetime.datetime.now()
+
+        print("top", end - start)
+        start = datetime.datetime.now()
+        results['summary'] = results.articles.apply(lambda x: x.summary)
+        end = datetime.datetime.now()
+
+        print("top", end - start)
+        """for row in results.itertuples():
             try:
                 article = self.scrape(row.url)
                 if row.thumbnail is None or row.thumbnail == "":
                     results.at[row.Index, 'thumbnail'] = article.top_image
                     results.at[row.Index, 'summary'] = article.summary
             except:
-                print(f"forbidden for {row.url}")
+                print(f"forbidden for {row.url}")"""
 
         return results
 
