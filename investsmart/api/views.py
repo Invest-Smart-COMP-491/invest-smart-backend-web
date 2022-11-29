@@ -9,7 +9,6 @@ from rest_framework import permissions
 from main import models
 from main import helper
 from accounts import models as accountModels
-from main.models import CommentLike
 from . import serializers
 
 import numpy as np
@@ -89,6 +88,7 @@ class CategoryApiView(APIView):
     filter_backends = (filters.SearchFilter,)
     queryset = Asset.objects.all()
     serializer_class = AssetSerializer"""
+    
 class AssetsApiView(generics.ListAPIView):
     search_fields = ['asset_name', 'asset_ticker']
     filter_backends = (filters.SearchFilter,)
@@ -114,12 +114,12 @@ class CommentsLikesApiView(APIView):
         if len(kwargs) > 0:
             #print(kwargs)
             comment_id = kwargs.get('slug')
-            commentlikes = CommentLike.objects.get(comment_id=comment_id)
+            comment = models.Comment.objects.get(id=comment_id)
         else:
             #commentlikes = models.CommentLike.objects.all() # TODO: do not return all comment, maybe something else can be applied 
-            commentslikes = np.array([])
+            comment = np.array([])
         
-        serializer = serializers.CommentLikeSerializer(commentslikes, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        commentLikes = serializers.CommentLikeSerializer(comment, many=True)
+        return Response(commentLikes.data, status=status.HTTP_200_OK)
 
 
