@@ -109,6 +109,22 @@ class AssetDetailView(View):
 			favouriteAssetObj = models.FavouriteAsset.objects.filter(user=user,asset=asset).delete()
 			asset.favourite_count = asset.favourite_count - 1 
 			asset.save()
+		if request.POST["action"] == "likeComment":
+			response_data = {}
+			comment_id = request.POST.get("comment_id")
+			comment = models.Comment.objects.filter(id=comment_id).first()
+			user = request.user
+			comment.liked_users.add(user)
+			comment.like_count = comment.like_count + 1 
+			comment.save()
+		if request.POST["action"] == "unlikeComment":
+			response_data = {}
+			comment_id = request.POST.get("comment_id")
+			comment = models.Comment.objects.filter(id=comment_id).first()
+			user = request.user
+			comment.liked_users.remove(user)
+			comment.like_count = comment.like_count - 1 
+			comment.save()
 
 
 
