@@ -13,8 +13,7 @@ from django.urls import reverse
 class AssetCategory(models.Model):
 	category_name = models.CharField(max_length = 200,unique=True)
 	slug = models.SlugField(null=True)
-	like_count = models.IntegerField(default=0) # we can count liked users 
-	liked_users = models.ManyToManyField(CustomUser,symmetrical=False,blank=True)
+	favourite_count = models.IntegerField(default=0) # we can count liked users 
 	
 	def __str__(self):
 		return self.category_name
@@ -42,7 +41,7 @@ class Asset(models.Model):
 	view_count = models.IntegerField(default=0)
 	photo_link = models.URLField(null=True, blank=True) #URLField is needed or CharField is enough? 
 	market_size = models.FloatField(default=0)
-	like_count = models.IntegerField(default=0) # needed to handle 
+	favourite_count = models.IntegerField(default=0) # needed to handle 
 
 	def __str__(self):
 		return self.asset_name

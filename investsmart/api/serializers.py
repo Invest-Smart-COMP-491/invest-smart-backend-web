@@ -16,7 +16,7 @@ class AssetSerializer(serializers.ModelSerializer):
     asset_category_name = serializers.CharField(source='asset_category.category_name')
     class Meta:
         model = models.Asset
-        fields = ["asset_name",	"asset_ticker", "last_price", "asset_category_name", "view_count", "photo_link", "market_size","like_count"]
+        fields = ["asset_name",	"asset_ticker", "last_price", "asset_category_name", "view_count", "photo_link", "market_size","favourite_count"]
 
 class CommentSerializer(serializers.ModelSerializer):
     asset_ticker = serializers.CharField(source='asset.asset_ticker')
