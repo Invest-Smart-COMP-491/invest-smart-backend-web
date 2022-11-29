@@ -13,6 +13,10 @@ from main.models import CommentLike
 from . import serializers
 
 import numpy as np
+from rest_framework import generics
+from main.models import Asset
+from .serializers import AssetSerializer
+from rest_framework import filters
 
 class NewsApiView(APIView):
     # add permission to check if user is authenticated
@@ -79,11 +83,6 @@ class CategoryApiView(APIView):
         
         serializer = serializers.CategorySerializer(categories, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-from rest_framework import generics
-from main.models import Asset
-from .serializers import AssetSerializer
-from rest_framework import filters
 
 """class QuestionsAPIView(generics.ListCreateAPIView):
     search_fields = ['asset_name', 'asset_ticker']
