@@ -8,7 +8,7 @@ from rest_framework import permissions
 from main import models,helper
 from accounts import models as accountModels
 from . import serializers
-#from reco.stock_recommender import SimilarStocks
+from reco.stock_recommender import SimilarStocks
 
 import numpy as np
 
@@ -25,8 +25,8 @@ class NewsApiView(APIView):
                 asset = models.Asset.objects.filter(asset_ticker=slug).first()
                 news = models.News.objects.filter(asset=asset)
         else:
-            #sse = SimilarStocks()
-            #sse.buildSimilarityDict()
+            """sse = SimilarStocks()
+            sse.buildSimilarityDict()"""
 
             news = models.News.objects.all()
         

@@ -54,8 +54,11 @@ class SimilarStocks:
         nes."""
 
     def buildSimilarityDict(self):
-        news = News.objects.all()
-        news = news[['asset', 'mentioned_asset']]
-
-        print(type(news))
-        print(news)
+        #news = News.objects.all()
+        #news = news[['asset', 'mentioned_asset']]
+        pass
+        #df = pd.DataFrame(list(News.objects.all().values('asset', 'mentioned_asset')))
+        #print(News.objects.all().values('asset', 'mentioned_asset'))
+        #print(df.sort_values(['mentioned_asset']))
+        #print(type(df))
+        #print(df)
