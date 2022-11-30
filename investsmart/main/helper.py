@@ -139,11 +139,12 @@ def createandUpdateNews(name, ticker, df_news):
 
 		model_instances = [News(
 			title=row['title'],
-			description = row['description'],
 			url = row['url'],
 			published_date = row['published_date'],
 			publisher =  row['publisher'],
-			asset = asset
+			asset = asset,
+			thumbnail = row['thumbnail'],
+			summary = row['summary']
 		) for index, row in df_news.iterrows()]
 
 		News.objects.bulk_create(model_instances,ignore_conflicts = True) # update_conflicts=True

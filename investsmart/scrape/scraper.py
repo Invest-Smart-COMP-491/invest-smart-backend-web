@@ -12,14 +12,6 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
 
-def scrape(url):
-    article = Article(url)
-    article.download()
-    article.parse()
-    # nltk.download('punkt')  # 1 time download of the sentence tokenizer
-    article.nlp()
-    return article
-
 def tickerPrices(ticker_list):
     data = yf.download(  # or pdr.get_data_yahoo(...
         # tickers list or string as well
@@ -87,43 +79,9 @@ class LivePrice:
         return self.stock.news
 
 
-class DBUpdater():
-    def __init__(self):
-        pass
-
-    def updateAllLastPrices(self):
-        map(self.updateLastPrice, STOCK_TICKERS_LIST)
-
-        """for st in STOCKS_LIST:
-            lp = LivePrice(st)
-            last_price = lp.getLastPrice()
-            self.updateLastPrice(st, last_price)"""
-
-    def updateLastPrice(self, ticker):
-        lp = LivePrice(ticker)
-        last_price = lp.getLastPrice()
-        db.update(ticker, last_price)
-
-    def updateAllAnalystTargets(self):
-        map(self.updateAnalystTargets, STOCK_TICKERS_LIST)
-
-    def updateAnalystTargets(self, ticker):
-        lp = LivePrice(ticker)
-        targets = lp.getLastPrice()
-
-        """{'date': '2022-10-28',
-         'category': 'Reiterated',
-         'analyst': 'Wedbush',
-         'rating': 'Outperform',
-         'target_from': 220.0,
-         'target_to': 200.0}"""
-        for tar in targets:
-            db.update(tar)
-
-
 class NewsAPI:
     def __init__(self):
-        self.client = NewsApiClient(api_key=NEWS_API_KEY)
+        #self.client = NewsApiClient(api_key=NEWS_API_KEY)
         sources = self.client.get_sources()
         eng_ls = [i for i in sources['sources'] if i['language'] == 'en']
         self.eng_sources_str = str([j['id'] for j in eng_ls]).replace('[', '').replace(']', '').replace('\'', '')
