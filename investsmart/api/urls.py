@@ -13,8 +13,8 @@ urlpatterns = [
     path("assets/<slug:slug>", views.AssetsApiView.as_view()),
     path("comments/", views.CommentsApiView.as_view()),
     path("comments/<slug:slug>", views.CommentsApiView.as_view(), name="asset_comments"),
-    path("commentLikes/", views.CommentsLikesApiView.as_view()),
-    path("commentLikes/<slug:slug>", views.CommentsLikesApiView.as_view(), name="comments_likes"),
+#    path("commentLikes/", views.CommentsLikesApiView.as_view()),
+#    path("commentLikes/<slug:slug>", views.CommentsLikesApiView.as_view(), name="comments_likes"),
     path("assets/fav", views.CurrentUserFavouriteAssetsApiView.as_view(), name="favourite_assets"),
     path("assets/favCategory", views.CurrentUserFavouriteCategoryApiView.as_view(), name="favourite_categories"),
 ]

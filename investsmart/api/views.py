@@ -108,7 +108,7 @@ class CommentsApiView(APIView):
         serializer = serializers.CommentSerializer(comments, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-
+"""
 class CommentsLikesApiView(APIView):
     def get(self, request, *args, **kwargs):
         if len(kwargs) > 0:
@@ -121,5 +121,6 @@ class CommentsLikesApiView(APIView):
         
         commentLikes = serializers.CommentLikeSerializer(comment, many=True)
         return Response(commentLikes.data, status=status.HTTP_200_OK)
+"""
 
 

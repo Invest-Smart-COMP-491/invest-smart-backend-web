@@ -99,7 +99,6 @@ class AssetDetailView(View):
 			asset = models.Asset.objects.filter(asset_ticker=asset_ticker).first()
 			user = request.user
 			favouriteAssetObj = models.FavouriteAsset.objects.get_or_create(user=user,asset=asset)
-			asset.favourite_count = asset.favourite_count + 1 
 			asset.save()
 		elif request.POST["action"] == "unfavouriteAsset":
 			response_data = {}
@@ -107,7 +106,6 @@ class AssetDetailView(View):
 			asset = models.Asset.objects.filter(asset_ticker=asset_ticker).first()
 			user = request.user
 			models.FavouriteAsset.objects.filter(user=user,asset=asset).delete()
-			asset.favourite_count = asset.favourite_count - 1 
 			asset.save()
 		elif request.POST["action"] == "likeComment":
 			response_data = {}
@@ -115,7 +113,6 @@ class AssetDetailView(View):
 			comment = models.Comment.objects.filter(id=comment_id).first()
 			user = request.user
 			comment.liked_users.add(user)
-			comment.like_count = comment.like_count + 1 
 			comment.save()
 		elif request.POST["action"] == "unlikeComment":
 			response_data = {}
@@ -123,7 +120,6 @@ class AssetDetailView(View):
 			comment = models.Comment.objects.filter(id=comment_id).first()
 			user = request.user
 			comment.liked_users.remove(user)
-			comment.like_count = comment.like_count - 1 
 			comment.save()
 		elif request.POST["action"] == "favouriteAssetCategory": # TODO: can be moved/copy to the category view if needed 
 			response_data = {}
@@ -131,7 +127,6 @@ class AssetDetailView(View):
 			assetCategory = models.AssetCategory.objects.filter(slug=asset_category_slug).first()
 			user = request.user
 			favouriteCategoryObj = models.FavouriteCategory.objects.get_or_create(user=user,asset_category=assetCategory)
-			assetCategory.favourite_count = assetCategory.favourite_count + 1 
 			assetCategory.save()
 		elif request.POST["action"] == "unfavouriteAssetCategory":
 			response_data = {}
@@ -139,7 +134,6 @@ class AssetDetailView(View):
 			assetCategory = models.AssetCategory.objects.filter(slug=asset_category_slug).first()
 			user = request.user
 			models.FavouriFavouriteCategoryteAsset.objects.filter(user=user,asset_category=assetCategory).delete()
-			assetCategory.favourite_count = assetCategory.favourite_count - 1 
 			assetCategory.save()
 
 

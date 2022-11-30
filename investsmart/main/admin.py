@@ -29,3 +29,5 @@ admin.site.register(News)
 admin.site.register(AssetPrice)
 admin.site.register(FavouriteAsset)
 admin.site.register(FavouriteCategory)
+admin.site.register(Comment)
+

@@ -13,7 +13,6 @@ from django.urls import reverse
 class AssetCategory(models.Model):
 	category_name = models.CharField(max_length = 200,unique=True)
 	slug = models.SlugField(null=True)
-	favourite_count = models.IntegerField(default=0) # we can count liked users 
 	
 	def __str__(self):
 		return self.category_name
@@ -41,7 +40,6 @@ class Asset(models.Model):
 	view_count = models.IntegerField(default=0)
 	photo_link = models.URLField(null=True, blank=True) #URLField is needed or CharField is enough? 
 	market_size = models.FloatField(default=0)
-	favourite_count = models.IntegerField(default=0) # needed to handle 
 
 	def __str__(self):
 		return self.asset_name
@@ -111,10 +109,9 @@ class Comment(models.Model):
 	asset = models.ForeignKey(Asset, default=None, verbose_name="Asset", on_delete=models.CASCADE)
 	comment_text = models.TextField()
 	date_time = models.DateTimeField("date published",default=timezone.now)
-	parent_comment = models.ForeignKey("self",on_delete=models.CASCADE) #cascading or keeping comment? 
-	imported_from = models.CharField(max_length = 200)
+	parent_comment = models.ForeignKey("self",on_delete=models.CASCADE,null=True, blank=True) #cascading or keeping comment? 
+	imported_from = models.CharField(max_length = 200,null=True, blank=True)
 	liked_users = models.ManyToManyField(CustomUser,related_name="liked_users",symmetrical=False,blank=True)
-	like_count = models.IntegerField(default=0) # we can count liked users  
 
 	def __str__(self):
 		return self.comment_text
