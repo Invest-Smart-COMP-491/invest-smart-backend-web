@@ -2,20 +2,14 @@ from django.shortcuts import render
 
 # Create your views here.
 from rest_framework.views import APIView
-from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import permissions
-from main import models
-from main import helper
+from main import models,helper
 from accounts import models as accountModels
 from . import serializers
 
 import numpy as np
-from rest_framework import generics
-from main.models import Asset
-from .serializers import AssetSerializer
-from rest_framework import filters
 
 class NewsApiView(APIView):
     # add permission to check if user is authenticated
@@ -34,6 +28,15 @@ class NewsApiView(APIView):
         
         serializer = serializers.NewsSerializer(news, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def post(self,request):
+
+        serializer= serializers.NewsSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class CurrentUserFavouriteAssetsApiView(APIView):
     def get(self, request, *args, **kwargs):
@@ -44,6 +47,15 @@ class CurrentUserFavouriteAssetsApiView(APIView):
         
         serializer = serializers.FavouriteAssetSerializer(ret, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def post(self,request):
+
+        serializer= serializers.FavouriteAssetSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class CurrentUserFavouriteCategoryApiView(APIView):
     def get(self, request, *args, **kwargs):
@@ -53,6 +65,14 @@ class CurrentUserFavouriteCategoryApiView(APIView):
         
         serializer = serializers.FavouriteCategorySerializer(ret, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def post(self,request):
+
+        serializer= serializers.FavouriteCategorySerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class PriceApiView(APIView): 
     def get(self, request, *args, **kwargs):
@@ -74,7 +94,14 @@ class PriceApiView(APIView):
             serializer = serializers.AllAssetPriceSerializer(assets, many=True)
         
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def post(self,request):
 
+        serializer= serializers.AssetPriceSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class CategoryApiView(APIView):
     def get(self, request, *args, **kwargs):
@@ -83,17 +110,37 @@ class CategoryApiView(APIView):
         serializer = serializers.CategorySerializer(categories, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-"""class QuestionsAPIView(generics.ListCreateAPIView):
-    search_fields = ['asset_name', 'asset_ticker']
-    filter_backends = (filters.SearchFilter,)
-    queryset = Asset.objects.all()
-    serializer_class = AssetSerializer"""
+    def post(self,request):
+
+        serializer= serializers.CategorySerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class AssetsApiView(APIView):
+    def get(self, request, *args, **kwargs):
+
+        if len(kwargs) > 0:
+            #print(kwargs)
+            # category_id = kwargs.get('category_id') # category_id also can be used 
+            slug = kwargs.get('slug') 
+            assets = models.Asset.objects.filter(asset_category__slug=slug)
+
+        else:
+            assets = models.Asset.objects.all()
+        
+        serializer = serializers.AssetSerializer(assets, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
     
-class AssetsApiView(generics.ListAPIView):
-    search_fields = ['asset_name', 'asset_ticker']
-    filter_backends = (filters.SearchFilter,)
-    queryset = Asset.objects.all()
-    serializer_class = AssetSerializer
+    def post(self,request):
+
+        serializer= serializers.AssetSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class CommentsApiView(APIView):
     def get(self, request, *args, **kwargs):
@@ -108,19 +155,25 @@ class CommentsApiView(APIView):
         serializer = serializers.CommentSerializer(comments, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    def post(self,request):
+
+        serializer= serializers.CommentSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 """
 class CommentsLikesApiView(APIView):
     def get(self, request, *args, **kwargs):
         if len(kwargs) > 0:
             #print(kwargs)
             comment_id = kwargs.get('slug')
-            comment = models.Comment.objects.get(id=comment_id)
+            commentlikes = CommentLike.objects.get(comment_id=comment_id)
         else:
             #commentlikes = models.CommentLike.objects.all() # TODO: do not return all comment, maybe something else can be applied 
-            comment = np.array([])
+            commentslikes = np.array([])
         
-        commentLikes = serializers.CommentLikeSerializer(comment, many=True)
-        return Response(commentLikes.data, status=status.HTTP_200_OK)
+        serializer = serializers.CommentLikeSerializer(commentslikes, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 """
-
-
