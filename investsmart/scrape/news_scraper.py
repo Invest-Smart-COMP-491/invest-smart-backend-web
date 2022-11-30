@@ -8,7 +8,6 @@ from dateutil import parser
 import datetime
 import pytz
 from newspaper import Article
-import swifter
 
 scraped_dict = {}
 
@@ -30,15 +29,8 @@ class NewsScraper:
 
     def scrape(self, url):
         article = Article(url)
-        try:
-            article.download()
-        except:
-            return article
-
-        try:
-            article.parse()
-        except:
-            return article
+        article.download()
+        article.parse()
         article.nlp()
         return article
     
@@ -63,22 +55,15 @@ class NewsScraper:
         results = results[results['published_date'] >= datetime.datetime.now(pytz.utc) - period]
         results.reset_index(drop=True, inplace=True)
 
-        articles = results.url
-
-        
-        articles = articles.swifter.apply(lambda x: self.scrape(x))
-        
-        results['thumbnail'] = articles.apply(lambda x: x.top_image)
-        results['summary'] = articles.apply(lambda x: x.summary)
-
-        """for row in results.itertuples():
+        for row in results.itertuples():
             try:
                 article = self.scrape(row.url)
                 if row.thumbnail is None or row.thumbnail == "":
                     results.at[row.Index, 'thumbnail'] = article.top_image
-                    results.at[row.Index, 'summary'] = article.summary
+
+                results.at[row.Index, 'summary'] = article.summary
             except:
-                print(f"forbidden for {row.url}")"""
+                print(f"Couldn't scrape from {row.url}")
 
         return results
 

@@ -28,4 +28,3 @@ sqlalchemy
 gevent
 django_rest_framework
 pytz
-swifter
