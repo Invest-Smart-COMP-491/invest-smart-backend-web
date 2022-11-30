@@ -15,7 +15,7 @@ from api import serializers
 
 class HomeView(View):
 
-	template_name = "main/home.html"
+	template_name = "main/index.html"
 
 	def get(self,request,*args,**kwargs):
 		return render(request=request,template_name=self.template_name,context={"category":models.AssetCategory.objects.all})
