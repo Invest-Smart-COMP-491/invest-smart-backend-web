@@ -1,8 +1,8 @@
 import re
 import pandas as pd
-from investsmart.scrape.crawl_reddit import RedditScraper
-from investsmart.scrape.constants import STOCK_TICKERS_LIST
-
+from scrape.crawl_reddit import RedditScraper
+from scrape.constants import STOCK_TICKERS_LIST
+from main.models import News
 
 class Recommender:
     def __init__(self):
@@ -43,3 +43,22 @@ class Recommender:
                     freq_dict[stock] = freq_dict.get(stock, 0) + 1
 
         return freq_dict
+
+class SimilarStocks:
+    def __init__(self):
+        pass
+
+    """def getSimilars(self, ticker):
+        news = News.objects.filter(asset=ticker)
+        
+        nes."""
+
+    def buildSimilarityDict(self):
+        #news = News.objects.all()
+        #news = news[['asset', 'mentioned_asset']]
+        pass
+        #df = pd.DataFrame(list(News.objects.all().values('asset', 'mentioned_asset')))
+        #print(News.objects.all().values('asset', 'mentioned_asset'))
+        #print(df.sort_values(['mentioned_asset']))
+        #print(type(df))
+        #print(df)
