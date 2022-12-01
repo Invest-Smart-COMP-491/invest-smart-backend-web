@@ -172,7 +172,7 @@ class TrendingStocksApiView(APIView):
         asset_ls = getPopularAssets()
         ret = models.Asset.objects.filter(asset_ticker=asset_ls)
 
-        serializer = serializers.FavouriteAssetSerializer(ret, many=True)
+        serializer = serializers.AssetSerializer(ret, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request):

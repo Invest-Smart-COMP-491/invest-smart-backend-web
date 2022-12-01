@@ -8,10 +8,10 @@ class Recommender:
     def __init__(self):
         pass
 
-    @staticmethod
     def getTopPerformers(self) -> list:
         """Sorts dict by the popularity."""
-        dc = {k: v for k, v in sorted(self.getRedditTrending().items(), key=lambda item: item[1])}
+        dc = {k.upper(): v for k, v in sorted(self.getRedditTrending().items(), key=lambda item: item[1])}
+        #print(list(dc))
         return list(dc)
 
     def getRedditTrending(self) -> dict:
@@ -23,8 +23,8 @@ class Recommender:
 
         posts = pd.concat([posts, posts2])
         # return posts
+        #print(posts)
         for row in posts[['title', 'body']].to_dict():
-
             stonk = re.findall(r'[A-Z]{3}(?<![A-Z]{4})(?![A-Z])',
                                (str([posts['title'].iloc[i] for i in range(len(posts['title']))])).replace("\\",
                                                                                                            "").replace(
@@ -43,6 +43,7 @@ class Recommender:
                 if stock in STOCK_TICKERS_LIST:
                     freq_dict[stock] = freq_dict.get(stock, 0) + 1
 
+        print('dc', freq_dict)
         return freq_dict
 
 class SimilarStocks:
