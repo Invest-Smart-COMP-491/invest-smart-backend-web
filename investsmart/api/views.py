@@ -7,7 +7,7 @@ from rest_framework import permissions
 from main import models,helper
 from . import serializers
 from accounts import models as accountModels
-from reco.stock_recommender import SimilarStocks
+from reco.stock_recommender import SimilarStocks, getPopularAssets
 
 
 
@@ -166,6 +166,17 @@ class CommentsApiView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+class TrendingStocksApiView(APIView):
+    def get(self, request, *args, **kwargs):
+        asset_ls = getPopularAssets()
+        ret = models.Asset.objects.filter(asset_ticker=asset_ls)
+
+        serializer = serializers.FavouriteAssetSerializer(ret, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        pass
 """
 class CommentsLikesApiView(APIView):
     def get(self, request, *args, **kwargs):
