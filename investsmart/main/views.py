@@ -16,7 +16,7 @@ from api import serializers
 
 class HomeView(View):
 
-	template_name = "main/home.html"
+	template_name = "main/index.html"
 
 	def get(self,request,*args,**kwargs):
 		
