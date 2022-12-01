@@ -170,7 +170,7 @@ class CommentsApiView(APIView):
 class TrendingStocksApiView(APIView):
     def get(self, request, *args, **kwargs):
         asset_ls = getPopularAssets()
-        ret = models.Asset.objects.filter(asset_ticker=asset_ls)
+        ret = models.Asset.objects.filter(asset_ticker__in = asset_ls)
 
         serializer = serializers.AssetSerializer(ret, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
