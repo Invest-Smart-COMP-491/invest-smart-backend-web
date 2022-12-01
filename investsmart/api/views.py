@@ -1,16 +1,15 @@
+import numpy as np
 from django.shortcuts import render
-
-# Create your views here.
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import permissions
 from main import models,helper
-from accounts import models as accountModels
 from . import serializers
-from reco.stock_recommender import SimilarStocks
+from accounts import models as accountModels
+from reco.stock_recommender import SimilarStocks, getPopularAssets
 
-import numpy as np
+
 
 class NewsApiView(APIView):
     # add permission to check if user is authenticated
@@ -167,6 +166,17 @@ class CommentsApiView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+class TrendingStocksApiView(APIView):
+    def get(self, request, *args, **kwargs):
+        asset_ls = getPopularAssets()
+        ret = models.Asset.objects.filter(asset_ticker__in = asset_ls)
+
+        serializer = serializers.AssetSerializer(ret, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        pass
 """
 class CommentsLikesApiView(APIView):
     def get(self, request, *args, **kwargs):
