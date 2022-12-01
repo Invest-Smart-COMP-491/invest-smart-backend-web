@@ -9,9 +9,10 @@ class Recommender:
         pass
 
     @staticmethod
-    def getTopPerformers(self):
-        # TODO: get top performing stocks of the week
-        return 0
+    def getTopPerformers(self) -> list:
+        """Sorts dict by the popularity."""
+        dc = {k: v for k, v in sorted(self.getRedditTrending().items(), key=lambda item: item[1])}
+        return list(dc)
 
     def getRedditTrending(self) -> dict:
         freq_dict = {}
@@ -46,7 +47,7 @@ class Recommender:
 
 class SimilarStocks:
     def __init__(self):
-        pass
+        self.reco_dict = {}
 
     """def getSimilars(self, ticker):
         news = News.objects.filter(asset=ticker)
@@ -56,9 +57,21 @@ class SimilarStocks:
     def buildSimilarityDict(self):
         #news = News.objects.all()
         #news = news[['asset', 'mentioned_asset']]
-        pass
-        #df = pd.DataFrame(list(News.objects.all().values('asset', 'mentioned_asset')))
+
+        df = pd.DataFrame(list(News.objects.all().values('asset', 'mentioned_asset')))
+        reco_dict = {}
+        for main_asset, mentioned_asset in df.iterrows():
+            ls = reco_dict.get(main_asset, [])
+            if mentioned_asset not in ls:
+                reco_dict.get(main_asset, []).append(mentioned_asset)
+
+        self.reco_dict = reco_dict
+        print(reco_dict)
         #print(News.objects.all().values('asset', 'mentioned_asset'))
-        #print(df.sort_values(['mentioned_asset']))
-        #print(type(df))
-        #print(df)
+
+    def getSimilarAssets(self, asset):
+        return self.reco_dict[asset]
+
+
+def getPopularAssets():
+    rec = Recommender()
