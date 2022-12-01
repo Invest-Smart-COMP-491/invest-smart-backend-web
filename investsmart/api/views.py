@@ -84,8 +84,9 @@ class PriceApiView(APIView):
         assetPrices = None # TODO: handle if no assetPrices 
 
         if len(kwargs) > 0:
-            #print(kwargs) 
+            # TODO: slug can be category slug or asset_ticker handle it. 
             slug = kwargs.get('slug')
+
             assets = [c.asset_ticker for c in models.Asset.objects.all()]
             if slug in assets:
                 #asset = models.Asset.objects.filter(asset_ticker=slug).first()
@@ -127,9 +128,13 @@ class AssetsApiView(APIView):
 
         if len(kwargs) > 0:
             #print(kwargs)
-            # category_id = kwargs.get('category_id') # category_id also can be used 
             slug = kwargs.get('slug') 
-            assets = models.Asset.objects.filter(asset_category__slug=slug)
+            assets = [c.asset_ticker for c in models.Asset.objects.all()]
+            if slug in assets: # if slug is asset_ticker
+                assets = models.Asset.objects.filter(asset_ticker=slug).first()
+            else: # if slug is asset category, return asset array
+                assets = models.Asset.objects.filter(asset_category__slug=slug)
+
 
         else:
             assets = models.Asset.objects.all()

@@ -23,9 +23,11 @@ class HomeView(View):
 		top_n = 10 # top 10 news, can be reassigned 
 		
 		asset_ls = getPopularAssets()
-		top_assets = models.Asset.objects.filter(asset_ticker__in = asset_ls)[:10]
+		top_assets = models.Asset.objects.filter(asset_ticker__in = asset_ls)[:top_n]
 		# TODO: after deploy to postgres, apply .distinct() to get distinct news from each asset; 
-		top_asset_news = models.News.objects.filter(asset__in=top_assets).order_by('-published_date')[:10]
+		
+		#top_asset_news = models.News.objects.filter(asset__in=top_assets).order_by('-published_date')[:10]
+		top_asset_news = models.News.objects.filter(asset__asset_ticker__in=asset_ls).order_by('-published_date')[:top_n]
 
 		# you will get top ten news and assets(you can use for: .... top_asset.last_price)
 		return render(request=request,template_name=self.template_name,context={"top_assets":top_assets,"top_news":top_asset_news})
@@ -90,7 +92,10 @@ class AssetDetailView(View):
 			slug = kwargs.get('slug')
 			assets = [c.asset_ticker for c in models.Asset.objects.all()]
 			if slug in assets:
+
 				asset = models.Asset.objects.filter(asset_ticker=slug).first()
+				asset.view_count += 1 
+				asset.save()
 				all_news = models.News.objects.filter(asset=asset)
 				assetPrices = getAssetPrice(slug)  # do not save to the database directly gets from api 
 				assetPrices = serializers.AssetPriceSerializer(assetPrices, many=True)
