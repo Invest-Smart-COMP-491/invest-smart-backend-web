@@ -9,6 +9,7 @@ from django.contrib import messages
 
 from django.contrib.auth.decorators import login_required
 from .helper import createandUpdateAssets,updateLastPrices,createandUpdateNews,updatePrices,getAssetPrice
+from reco.stock_recommender import SimilarStocks, getPopularAssets
 
 from api import serializers 
 # Create your views here.
@@ -18,7 +19,16 @@ class HomeView(View):
 	template_name = "main/home.html"
 
 	def get(self,request,*args,**kwargs):
-		return render(request=request,template_name=self.template_name,context={"category":models.AssetCategory.objects.all})
+		
+		top_n = 10 # top 10 news, can be reassigned 
+		
+		asset_ls = getPopularAssets()
+		top_assets = models.Asset.objects.filter(asset_ticker__in = asset_ls)[:10]
+		# TODO: after deploy to postgres, apply .distinct() to get distinct news from each asset; 
+		top_asset_news = models.News.objects.filter(asset__in=top_assets).order_by('-published_date')[:10]
+
+		# you will get top ten news and assets(you can use for: .... top_asset.last_price)
+		return render(request=request,template_name=self.template_name,context={"top_assets":top_assets,"top_news":top_asset_news})
 
 	def post(self, request, *args, **kwargs):
 		return HttpResponse("Page Loaded") 
