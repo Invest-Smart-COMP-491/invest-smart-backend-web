@@ -1,16 +1,15 @@
+import numpy as np
 from django.shortcuts import render
-
-# Create your views here.
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import permissions
 from main import models,helper
-from accounts import models as accountModels
 from . import serializers
+from accounts import models as accountModels
 from reco.stock_recommender import SimilarStocks
 
-import numpy as np
+
 
 class NewsApiView(APIView):
     # add permission to check if user is authenticated

@@ -75,3 +75,8 @@ class SimilarStocks:
 
 def getPopularAssets():
     rec = Recommender()
+    rec.getRedditTrending()
+    return rec.getTopPerformers()
+
+
+
