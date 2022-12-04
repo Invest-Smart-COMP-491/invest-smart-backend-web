@@ -105,7 +105,7 @@
                 >
                   <h1 class="text-2xl font-medium">{{asset.asset_ticker}}</h1>
                   <span class="text-2xl font-medium" style="color: #22b871"
-                    >{{asset.last_price}}</span
+                    >{{asset.last_price|floatformat:2}}</span
                   >
                 </div>
               {% endfor %}
