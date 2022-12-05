@@ -27,3 +27,4 @@ sqlalchemy
 gevent
 django_rest_framework
 pytz
+sqlite
