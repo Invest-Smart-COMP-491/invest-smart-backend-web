@@ -31,6 +31,7 @@ class HomeView(View):
 
 		# you will get top ten news and assets(you can use for: .... top_asset.last_price)
 		return render(request=request,template_name=self.template_name,context={"top_assets":top_assets,"top_news":top_asset_news})
+		# return render(request=request,template_name=self.template_name,context={models.AssetCategory.objects.all})
 
 	def post(self, request, *args, **kwargs):
 		return HttpResponse("Page Loaded") 
