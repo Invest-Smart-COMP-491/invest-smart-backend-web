@@ -171,10 +171,10 @@ class CommentsApiView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
+from apps import ASSET_LS
 class TrendingStocksApiView(APIView):
     def get(self, request, *args, **kwargs):
-        asset_ls = getPopularAssets()
+        asset_ls = ASSET_LS
         ret = models.Asset.objects.filter(asset_ticker__in = asset_ls)
 
         serializer = serializers.AssetSerializer(ret, many=True)
