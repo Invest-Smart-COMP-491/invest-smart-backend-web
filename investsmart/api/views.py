@@ -184,6 +184,8 @@ class TrendingStocksApiView(APIView):
         pass
 
 class UserApiView(APIView):
+    """Returns the user information that is associated with the username passed as slug.
+    Might be good idea to fetch all user comments and favorites as well."""
     def get(self, request, *args, **kwargs):
         slug = kwargs.get('slug')
         ret = models.CustomUser.objects.filter(username=slug)
