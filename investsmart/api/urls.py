@@ -18,4 +18,5 @@ urlpatterns = [
 #    path("commentLikes/<slug:slug>", views.CommentsLikesApiView.as_view(), name="comments_likes"),
     path("assets/fav", views.CurrentUserFavouriteAssetsApiView.as_view(), name="favourite_assets"),
     path("assets/favCategory", views.CurrentUserFavouriteCategoryApiView.as_view(), name="favourite_categories"),
+    path("users/", views.UserApiView.as_view(), name="users"),
 ]
