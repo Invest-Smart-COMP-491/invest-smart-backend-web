@@ -182,6 +182,20 @@ class TrendingStocksApiView(APIView):
 
     def post(self, request):
         pass
+
+class UserApiView(APIView):
+    """Returns the user information that is associated with the username passed as slug.
+    Might be good idea to fetch all user comments and favorites as well."""
+    def get(self, request, *args, **kwargs):
+        slug = kwargs.get('slug')
+        ret = models.CustomUser.objects.filter(username=slug)
+
+        serializer = serializers.UserSerializer(ret, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        pass
+
 """
 class CommentsLikesApiView(APIView):
     def get(self, request, *args, **kwargs):

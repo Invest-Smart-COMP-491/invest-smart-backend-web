@@ -68,3 +68,9 @@ class AllAssetPriceSerializer(serializers.ModelSerializer):
         model = models.Asset
         fields = "__all__"
         #fields = ["asset_name", "asset_ticker", "last_price"]
+
+class UserSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(source='user.username')
+    class Meta:
+        model = models.CustomUser
+        fields = "__all__"

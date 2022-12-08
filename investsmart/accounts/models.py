@@ -4,7 +4,7 @@ from django.contrib.auth.models import AbstractUser
 
 
 class CustomUser(AbstractUser):
-
+	public_name = models.CharField(max_length = 20,unique=True)
     # add additional fields in here
     
 
