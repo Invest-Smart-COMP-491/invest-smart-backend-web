@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-k!%lbc_x48uf0^zqae#k*r2vog^c)hyqjq_yr$b@%7!#9&+d-r"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
@@ -135,7 +135,9 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 # this is directory name where collectstatic files command will put your app level static files
-STATIC_ROOT = '/var/www/investsmart/static/'
+
+#STATIC_ROOT = '/var/www/investsmart/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 MEDIA_ROOT = '/var/www/investsmart/media/'
 MEDIA_URL = '/media/'
