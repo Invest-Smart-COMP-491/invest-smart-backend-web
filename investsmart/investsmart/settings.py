@@ -132,20 +132,21 @@ USE_TZ = True
 
 # this defines the url for static files
 # eg: base-url.com/static/your-js-file.js
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 
 # this is directory name where collectstatic files command will put your app level static files
 
-STATIC_ROOT = '/var/www/investsmart/static/'
-#STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+# STATIC_ROOT = '/var/www/investsmart/static/'
+#STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static")
+
 
 MEDIA_ROOT = '/var/www/investsmart/media/'
 MEDIA_URL = '/media/'
 
-"""STATICFILES_DIRS = [
-    BASE_DIR / "static/",
-    '/var/www/investsmart/static/',
-]"""
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, "static"),
+)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
