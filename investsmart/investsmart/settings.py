@@ -137,11 +137,8 @@ STATIC_URL = '/static/'
 # this is directory name where collectstatic files command will put your app level static files
 STATIC_ROOT = '/var/www/investsmart/static/'
 
-# this is directory paths where you have to put your project level static files
-# you can put multiple folders here
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "static"),
-)
+MEDIA_ROOT = '/var/www/investsmart/media/'
+MEDIA_URL = '/media/'
 
 
 # Default primary key field type
