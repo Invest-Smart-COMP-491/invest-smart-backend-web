@@ -1,4 +1,4 @@
-django==4.1.2
+django==3
 django-tinymce
 numpy==1.21.5
 pandas
@@ -14,7 +14,7 @@ htmldate
 newsapi
 htmldate
 praw
-scikit-learn~=1.1.3
+scikit-learn
 psycopg2--binary
 celery
 redis
@@ -27,4 +27,4 @@ sqlalchemy
 gevent
 django_rest_framework
 pytz
-sqlite
+pysqlite3

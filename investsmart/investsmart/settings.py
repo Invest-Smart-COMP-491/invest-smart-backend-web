@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-k!%lbc_x48uf0^zqae#k*r2vog^c)hyqjq_yr$b@%7!#9&+d-r"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
 
@@ -81,7 +82,7 @@ WSGI_APPLICATION = "investsmart.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3", # will be switched to PostGreSQL in deployment
-        "NAME": BASE_DIR / "db.sqlite3",
+        "NAME": os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 
@@ -127,7 +128,24 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_URL = "static/"
+#STATIC_URL = "static/"
+
+# this defines the url for static files
+# eg: base-url.com/static/your-js-file.js
+STATIC_URL = '/static/'
+
+# this is directory name where collectstatic files command will put your app level static files
+
+STATIC_ROOT = '/var/www/investsmart/static/'
+#STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+
+MEDIA_ROOT = '/var/www/investsmart/media/'
+MEDIA_URL = '/media/'
+
+"""STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, "static"),
+)"""
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
