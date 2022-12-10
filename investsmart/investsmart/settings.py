@@ -132,7 +132,7 @@ USE_TZ = True
 
 # this defines the url for static files
 # eg: base-url.com/static/your-js-file.js
-STATIC_URL = '/static/'
+STATIC_URL = 'static/'
 
 # this is directory name where collectstatic files command will put your app level static files
 
