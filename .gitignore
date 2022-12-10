@@ -85,3 +85,4 @@ fabric.properties
 .idea/caches/build_file_checksums.ser
 investsmart/celerybeat-schedule.bak
 investsmart/celerybeat-schedule.dir
+*.zip
