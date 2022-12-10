@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-k!%lbc_x48uf0^zqae#k*r2vog^c)hyqjq_yr$b@%7!#9&+d-r"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
 
@@ -132,10 +132,10 @@ USE_TZ = True
 
 # this defines the url for static files
 # eg: base-url.com/static/your-js-file.js
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 
 # this is directory name where collectstatic files command will put your app level static files
-STATIC_ROOT = '/var/www/investsmart/static/'
+STATIC_ROOT = 'static/'
 
 """# this is directory paths where you have to put your project level static files
 # you can put multiple folders here
