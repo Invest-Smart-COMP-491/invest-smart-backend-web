@@ -41,33 +41,123 @@ class NewsApiView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class CurrentUserFavouriteAssetsApiView(APIView):
+class UserFavouriteAssetsApiView(APIView):
     def get(self, request, *args, **kwargs):
 
-        user = request.user
-        ret = models.FavouriteAsset.objects.filter(user=user)
-        # ret = np.array([])
+        user = self.context.get("request").user # hope this works 
+        favouriteAssets = models.FavouriteAsset.objects.filter(user=user) # list 
+
+        if len(kwargs) > 0:
+
+            
+            asset_ticker = kwargs.get('slug')
+            favouriteAssets = models.FavouriteAsset.objects.filter(asset__asset_ticker=asset_ticker) # list
+            users = [c.user for c in favouriteAssets]
+
+            
+            serializer = serializers.UserSerializer(users, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK) # return users who liked given asset 
         
-        serializer = serializers.FavouriteAssetSerializer(ret, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        serializer = serializers.FavouriteAssetSerializer(favouriteAssets, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK) # returns current user's liked assets
     
-    def post(self,request):
+    def post(self,request,*args, **kwargs):
 
-        serializer= serializers.FavouriteAssetSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        if len(kwargs) > 0: # asset_ticker as slug 
+
+            asset = models.Asset.objects.filter(asset_ticker = kwargs.get('slug')).first()
+            user = self.context.get("request").user
+
+            favAsset = models.FavouriteAsset(asset=asset,user=user)
+            favAsset.save()
+
+            serializer= serializers.FavouriteAssetSerializer(data=favAsset)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    
+    def delete(self, request, *args, **kwargs):
+
+        user = self.context.get("request").user # hope this works 
+
+        if len(kwargs) > 0:
+            #print(kwargs)
+            asset_ticker = kwargs.get('slug')
+            favouriteAsset = models.FavouriteAsset.objects.filter(asset__asset_ticker=asset_ticker,user=user).first()
+            favouriteAsset.delete()
+            return Response(status=status.HTTP_200_OK)
+        
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-class CurrentUserFavouriteCategoryApiView(APIView):
+
+class UserFavouriteCategoryApiView(APIView):
     def get(self, request, *args, **kwargs):
 
-        user = request.user
-        ret = models.FavouriteCategory.objects.filter(user=user)
+        user = self.context.get("request").user # hope this works 
+        favouriteCategories = models.FavouriteCategory.objects.filter(user=user) # list 
+
+        if len(kwargs) > 0:
+
+            
+            slug = kwargs.get('slug')
+            favouriteCategories = models.FavouriteCategory.objects.filter(asset_category__slug=slug) # list
+            users = [c.user for c in favouriteCategories]
+
+            
+            serializer = serializers.UserSerializer(users, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK) # return users who liked given categories 
         
-        serializer = serializers.FavouriteCategorySerializer(ret, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        serializer = serializers.FavouriteCategorySerializer(favouriteCategories, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK) # returns current user's liked categories
+    
+    def post(self,request,*args, **kwargs):
+
+        if len(kwargs) > 0: # slug as slug 
+
+            asset_category = models.AssetCategory.objects.filter(slug=kwargs.get('slug')).first()
+            user = self.context.get("request").user
+
+            favCat = models.FavouriteCategory(asset_category__slug=asset_category,user=user)
+            favCat.save()
+
+            serializer= serializers.FavouriteCategorySerializer(data=favCat)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    
+    def delete(self, request, *args, **kwargs):
+
+        user = self.context.get("request").user # hope this works 
+
+        if len(kwargs) > 0:
+            #print(kwargs)
+            slug = kwargs.get('slug')
+            favouriteCategory = models.FavouriteCategory.objects.filter(asset_category__slug=slug,user=user).first()
+            favouriteCategory.delete()
+            return Response(status=status.HTTP_200_OK)
+        
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserFavouriteCategoryApiView(APIView):
+    def get(self, request, *args, **kwargs):
+        if len(kwargs) > 0:
+            user_id = kwargs.get('slug')
+
+            user = accountModels.CustomUser.objects.filter(user__id=user_id)
+            ret = models.FavouriteCategory.objects.filter(user=user)
+            
+            serializer = serializers.FavouriteCategorySerializer(ret, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        # only for test 
+        # helper.updatePopularStocks()
+        # return Response(status=status.HTTP_200_OK)
     
     def post(self,request):
 
@@ -81,10 +171,8 @@ class PriceApiView(APIView):
     def get(self, request, *args, **kwargs):
 
         serializer = None
-        assetPrices = None # TODO: handle if no assetPrices 
 
         if len(kwargs) > 0:
-            # TODO: slug can be category slug or asset_ticker handle it. 
             slug = kwargs.get('slug')
 
             assets = [c.asset_ticker for c in models.Asset.objects.all()]
@@ -157,27 +245,68 @@ class CommentsApiView(APIView):
             ticker = kwargs.get('slug')
             asset = models.Asset.objects.filter(asset_ticker=ticker).first()
             comments = models.Comment.objects.filter(asset=asset)
-        else:
-            comments = models.Comment.objects.all()
+
+            serializer = serializers.CommentSerializer(comments, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         
+
+        # return Response(status=status.HTTP_400_BAD_REQUEST) # TODO: replace below ones with this one 
+
+        comments = models.Comment.objects.all()
         serializer = serializers.CommentSerializer(comments, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
+        return Response(serializer.data, status=status.HTTP_200_OK) 
+        
+        
     def post(self,request):
+        
+        # user_id, asset_ticker , comment_text, (optional) parent_comment
+        asset = models.Asset.objects.filter(asset_ticker=request.data["asset_ticker"]).first()
+        user = accountModels.CustomUser.objects.filter(id=request.data["user_id"])
+        parent_comment = None
+        if "parent_comment" in request.data:
+            parent_comment = request.data["parent_comment"]
 
-        serializer= serializers.CommentSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+        created_comment = models.Comment(user=user,asset=asset,comment_text=request.data["comment_text"],parent_comment=parent_comment)
+        created_comment.save()
+
+        serializer= serializers.CommentSerializer(data=created_comment)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+    def put(self,request, *args, **kwargs):
+
+        if len(kwargs) > 0:
+            #print(kwargs)
+            id = kwargs.get('slug')
+            comment = models.Comment.objects.filter(id=id)
+            comment.comment_text=request.data["comment_text"]
+            comment.save()
+            serializer= serializers.CommentSerializer(data=comment)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+            
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+    
+    def delete(self, request, *args, **kwargs):
+        if len(kwargs) > 0:
+            #print(kwargs)
+            id = kwargs.get('slug')
+            comment = models.Comment.objects.filter(id=id)
+            comment.delete()
+        
+            return Response(status=status.HTTP_200_OK)
+        
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 class TrendingStocksApiView(APIView):
     def get(self, request, *args, **kwargs):
-        asset_ls = getPopularAssets()
-        ret = models.Asset.objects.filter(asset_ticker__in = asset_ls)
+        top_n = 10 # top 10 news, can be reassigned 
+		
+		#asset_ls = getPopularAssets()
+		#top_assets = models.Asset.objects.filter(asset_ticker__in = asset_ls)[:top_n]
+        top_assets = models.Asset.objects.all().order_by("-popularity")[:top_n]
 
-        serializer = serializers.AssetSerializer(ret, many=True)
+        serializer = serializers.AssetSerializer(top_assets, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request):

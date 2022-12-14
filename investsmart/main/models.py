@@ -40,6 +40,7 @@ class Asset(models.Model):
 	view_count = models.IntegerField(default=0)
 	photo_link = models.URLField(null=True, blank=True) #URLField is needed or CharField is enough? 
 	market_size = models.FloatField(default=0)
+	popularity = models.FloatField(default=0)
 
 	def __str__(self):
 		return self.asset_name

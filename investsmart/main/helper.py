@@ -4,10 +4,12 @@ from scrape.constants import STOCK_TICKERS_LIST,STOCKS_LIST
 #sys.path.append('../scrape')
 from scrape.scraper import LivePrice, tickerPrices
 from scrape.news_scraper import NewsScraper
-from .models import AssetCategory,Asset,News,AssetPrice
+from .models import AssetCategory,Asset,News,AssetPrice,FavouriteAsset
 import numpy as np 
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
+from reco.stock_recommender import SimilarStocks, getPopularAssets
+from django.db.models import Count
 
 def createandUpdateAssets():
 	for ticker,name in zip(STOCK_TICKERS_LIST,STOCKS_LIST):
@@ -151,3 +153,34 @@ def createandUpdateNews(name, ticker, df_news):
 	except Exception as e:
 			print(f"{ticker} failed to update news")
 			print(e)
+
+
+def updatePopularStocks():
+
+	asset_ls = getPopularAssets()
+	top_assets = Asset.objects.filter(asset_ticker__in = asset_ls)
+	popular_asset_tickers = [c.asset_ticker for c in top_assets]
+
+	Asset.objects.all().update(popularity=0)
+	result = FavouriteAsset.objects.values('asset__asset_ticker').order_by('asset__asset_ticker').annotate(count=Count('asset__asset_ticker'))
+
+	# create a list of objects that need to be updated in bulk update
+	bulk_update_list = []
+	
+	for asset_ticker, count in result.items():
+		popularityPoint = 100 if (asset_ticker in popular_asset_tickers) else 0 # if asset is popular add 100 point popularity 
+		currAsset = Asset.objects.get(asset_ticker=asset_ticker)
+		currAsset.popularity = popularityPoint + count # increase popularity by 1 for each follower 
+
+		# append the updated asset object to the list
+		bulk_update_list.append(currAsset)
+	
+	# update popularity of all assets in one operation
+	Asset.objects.bulk_update(bulk_update_list, ['popularity'])
+
+
+
+	
+
+
+
