@@ -25,9 +25,17 @@ us_sched = {
         'args': ()
     },
 }
-
 celery_app.conf.beat_schedule = {**celery_app.conf.beat_schedule, **us_sched}
 
+
+us_sched = {
+    'update_popular_stocks': {
+        'task': 'update_popular_stocks',
+        'schedule': 3600.0,
+        'args': ()
+    },
+}
+celery_app.conf.beat_schedule = {**celery_app.conf.beat_schedule, **us_sched}
 
 
 # Python >= 3.5:

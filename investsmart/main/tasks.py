@@ -17,3 +17,6 @@ def upload_news(period, stock_name, stock_ticker, *args, **kwargs):
 def update_prices(*args, **kwargs):
     helper.updateLastPricesAll()
     
+@shared_task(name="update_popular_stocks")
+def update_popular_stocks(*args, **kwargs):
+    helper.updatePopularStocks()

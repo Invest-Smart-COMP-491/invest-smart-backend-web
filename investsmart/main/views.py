@@ -22,12 +22,18 @@ class HomeView(View):
 		
 		top_n = 10 # top 10 news, can be reassigned 
 		
-		asset_ls = getPopularAssets()
-		top_assets = models.Asset.objects.filter(asset_ticker__in = asset_ls)[:top_n]
+		#asset_ls = getPopularAssets()
+		#top_assets = models.Asset.objects.filter(asset_ticker__in = asset_ls)[:top_n]
+
+		top_assets = models.Asset.objects.all().order_by("-popularity")[:top_n]
+		# popular_asset_tickers = [c.asset_ticker for c in top_assets]
+
 		# TODO: after deploy to postgres, apply .distinct() to get distinct news from each asset; 
 		
 		#top_asset_news = models.News.objects.filter(asset__in=top_assets).order_by('-published_date')[:10]
-		top_asset_news = models.News.objects.filter(asset__asset_ticker__in=asset_ls).order_by('-published_date')[:top_n]
+		top_asset_news = models.News.objects.filter(asset__in=top_assets).order_by('-published_date')[:top_n]
+
+		
 
 		# you will get top ten news and assets(you can use for: .... top_asset.last_price)
 		return render(request=request,template_name=self.template_name,context={"top_assets":top_assets,"top_news":top_asset_news})
