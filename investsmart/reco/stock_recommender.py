@@ -56,12 +56,12 @@ class SimilarStocks:
     def buildSimilarityDict(self):
         #news = News.objects.all()
         #news = news[['asset', 'mentioned_asset']]
-        df = pd.DataFrame(list(News.objects.all().values('asset', 'mentioned_asset')))
+        df = pd.DataFrame(list(News.objects.all().values('asset', 'mentioned_assets')))
         reco_dict = {}
-        for main_asset, mentioned_asset in df.iterrows():
+        for main_asset, mentioned_assets in df.iterrows():
             ls = reco_dict.get(main_asset, [])
-            if mentioned_asset not in ls:
-                reco_dict.get(main_asset, []).append(mentioned_asset)
+            if mentioned_assets not in ls:
+                reco_dict.get(main_asset, []).append(mentioned_assets)
 
         self.reco_dict = reco_dict
 
