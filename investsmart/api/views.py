@@ -44,12 +44,14 @@ class NewsApiView(APIView):
 class UserFavouriteAssetsApiView(APIView):
     def get(self, request, *args, **kwargs):
 
-        user = self.context.get("request").user # hope this works 
+        # user = self.context.get("request").user # we need to decide on this : should we send username or django helps with this method? 
+        user = accountModels.CustomUser.objects.filter(id=request.data["username"])
+        request.data
+        request.user
         favouriteAssets = models.FavouriteAsset.objects.filter(user=user) # list 
 
         if len(kwargs) > 0:
 
-            
             asset_ticker = kwargs.get('slug')
             favouriteAssets = models.FavouriteAsset.objects.filter(asset__asset_ticker=asset_ticker) # list
             users = [c.user for c in favouriteAssets]
@@ -66,7 +68,8 @@ class UserFavouriteAssetsApiView(APIView):
         if len(kwargs) > 0: # asset_ticker as slug 
 
             asset = models.Asset.objects.filter(asset_ticker = kwargs.get('slug')).first()
-            user = self.context.get("request").user
+            # user = self.context.get("request").user # we need to decide on this : should we send username or django helps with this method? 
+            user = accountModels.CustomUser.objects.filter(id=request.data["username"])
 
             favAsset = models.FavouriteAsset(asset=asset,user=user)
             favAsset.save()
@@ -79,8 +82,8 @@ class UserFavouriteAssetsApiView(APIView):
     
     
     def delete(self, request, *args, **kwargs):
-
-        user = self.context.get("request").user # hope this works 
+        # user = self.context.get("request").user # we need to decide on this : should we send username or django helps with this method? 
+        user = accountModels.CustomUser.objects.filter(id=request.data["username"])
 
         if len(kwargs) > 0:
             #print(kwargs)
@@ -96,7 +99,8 @@ class UserFavouriteAssetsApiView(APIView):
 class UserFavouriteCategoryApiView(APIView):
     def get(self, request, *args, **kwargs):
 
-        user = self.context.get("request").user # hope this works 
+        # user = self.context.get("request").user # we need to decide on this : should we send username or django helps with this method? 
+        user = accountModels.CustomUser.objects.filter(id=request.data["username"])
         favouriteCategories = models.FavouriteCategory.objects.filter(user=user) # list 
 
         if len(kwargs) > 0:
@@ -118,7 +122,8 @@ class UserFavouriteCategoryApiView(APIView):
         if len(kwargs) > 0: # slug as slug 
 
             asset_category = models.AssetCategory.objects.filter(slug=kwargs.get('slug')).first()
-            user = self.context.get("request").user
+            # user = self.context.get("request").user # we need to decide on this : should we send username or django helps with this method? 
+            user = accountModels.CustomUser.objects.filter(id=request.data["username"])
 
             favCat = models.FavouriteCategory(asset_category__slug=asset_category,user=user)
             favCat.save()
@@ -132,7 +137,8 @@ class UserFavouriteCategoryApiView(APIView):
     
     def delete(self, request, *args, **kwargs):
 
-        user = self.context.get("request").user # hope this works 
+        # user = self.context.get("request").user # we need to decide on this : should we send username or django helps with this method? 
+        user = accountModels.CustomUser.objects.filter(id=request.data["username"])
 
         if len(kwargs) > 0:
             #print(kwargs)
@@ -142,30 +148,6 @@ class UserFavouriteCategoryApiView(APIView):
             return Response(status=status.HTTP_200_OK)
         
         return Response(status=status.HTTP_400_BAD_REQUEST)
-
-
-class UserFavouriteCategoryApiView(APIView):
-    def get(self, request, *args, **kwargs):
-        if len(kwargs) > 0:
-            user_id = kwargs.get('slug')
-
-            user = accountModels.CustomUser.objects.filter(user__id=user_id)
-            ret = models.FavouriteCategory.objects.filter(user=user)
-            
-            serializer = serializers.FavouriteCategorySerializer(ret, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        # only for test 
-        # helper.updatePopularStocks()
-        # return Response(status=status.HTTP_200_OK)
-    
-    def post(self,request):
-
-        serializer= serializers.FavouriteCategorySerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class PriceApiView(APIView): 
     def get(self, request, *args, **kwargs):
@@ -260,8 +242,10 @@ class CommentsApiView(APIView):
     def post(self,request):
         
         # user_id, asset_ticker , comment_text, (optional) parent_comment
+
+        # user = self.context.get("request").user # we need to decide on this : should we send user_id or django helps with this method? 
+        user = accountModels.CustomUser.objects.filter(id=request.data["username"])
         asset = models.Asset.objects.filter(asset_ticker=request.data["asset_ticker"]).first()
-        user = accountModels.CustomUser.objects.filter(id=request.data["user_id"])
         parent_comment = None
         if "parent_comment" in request.data:
             parent_comment = request.data["parent_comment"]
