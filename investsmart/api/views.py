@@ -45,7 +45,7 @@ class UserFavouriteAssetsApiView(APIView):
     def get(self, request, *args, **kwargs):
 
         # user = self.context.get("request").user # we need to decide on this : should we send username or django helps with this method? 
-        user = accountModels.CustomUser.objects.filter(id=request.data["username"])
+        user = accountModels.CustomUser.objects.filter(username=request.data["username"]).first()
         request.data
         request.user
         favouriteAssets = models.FavouriteAsset.objects.filter(user=user) # list 
@@ -69,7 +69,7 @@ class UserFavouriteAssetsApiView(APIView):
 
             asset = models.Asset.objects.filter(asset_ticker = kwargs.get('slug')).first()
             # user = self.context.get("request").user # we need to decide on this : should we send username or django helps with this method? 
-            user = accountModels.CustomUser.objects.filter(id=request.data["username"])
+            user = accountModels.CustomUser.objects.filter(username=request.data["username"]).first()
 
             favAsset = models.FavouriteAsset(asset=asset,user=user)
             favAsset.save()
@@ -83,7 +83,7 @@ class UserFavouriteAssetsApiView(APIView):
     
     def delete(self, request, *args, **kwargs):
         # user = self.context.get("request").user # we need to decide on this : should we send username or django helps with this method? 
-        user = accountModels.CustomUser.objects.filter(id=request.data["username"])
+        user = accountModels.CustomUser.objects.filter(username=request.data["username"]).first()
 
         if len(kwargs) > 0:
             #print(kwargs)
@@ -100,7 +100,7 @@ class UserFavouriteCategoryApiView(APIView):
     def get(self, request, *args, **kwargs):
 
         # user = self.context.get("request").user # we need to decide on this : should we send username or django helps with this method? 
-        user = accountModels.CustomUser.objects.filter(id=request.data["username"])
+        user = accountModels.CustomUser.objects.filter(username=request.data["username"]).first()
         favouriteCategories = models.FavouriteCategory.objects.filter(user=user) # list 
 
         if len(kwargs) > 0:
@@ -123,7 +123,7 @@ class UserFavouriteCategoryApiView(APIView):
 
             asset_category = models.AssetCategory.objects.filter(slug=kwargs.get('slug')).first()
             # user = self.context.get("request").user # we need to decide on this : should we send username or django helps with this method? 
-            user = accountModels.CustomUser.objects.filter(id=request.data["username"])
+            user = accountModels.CustomUser.objects.filter(username=request.data["username"]).first()
 
             favCat = models.FavouriteCategory(asset_category__slug=asset_category,user=user)
             favCat.save()
@@ -138,7 +138,7 @@ class UserFavouriteCategoryApiView(APIView):
     def delete(self, request, *args, **kwargs):
 
         # user = self.context.get("request").user # we need to decide on this : should we send username or django helps with this method? 
-        user = accountModels.CustomUser.objects.filter(id=request.data["username"])
+        user = accountModels.CustomUser.objects.filter(username=request.data["username"]).first()
 
         if len(kwargs) > 0:
             #print(kwargs)
@@ -244,21 +244,35 @@ class CommentsApiView(APIView):
         # user_id, asset_ticker , comment_text, (optional) parent_comment
 
         # user = self.context.get("request").user # we need to decide on this : should we send user_id or django helps with this method? 
-        user = accountModels.CustomUser.objects.filter(id=request.data["username"])
+        user = accountModels.CustomUser.objects.filter(username=request.data["username"]).first()
         asset = models.Asset.objects.filter(asset_ticker=request.data["asset_ticker"]).first()
         parent_comment = None
-        if "parent_comment" in request.data:
-            parent_comment = request.data["parent_comment"]
-
+        if "parent_comment_id" in request.data:
+            parent_comment_id = request.data["parent_comment_id"]
+            parent_comment=models.Comment.objects.filter(id=parent_comment_id).first()
         
         created_comment = models.Comment(user=user,asset=asset,comment_text=request.data["comment_text"],parent_comment=parent_comment)
         created_comment.save()
 
-        serializer= serializers.CommentSerializer(data=created_comment)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_201_CREATED)
+        
+        #TODO: there is problem with serializer?
+        # serializer= serializers.CommentSerializer(data=created_comment)
+        #if serializer.is_valid():
+        #    serializer.save()
+        #    return Response(status=status.HTTP_201_CREATED)
+        # return Response(status=status.HTTP_400_BAD_REQUEST)
     
     def put(self,request, *args, **kwargs):
 
+        id=request.data["id"]
+        comment = models.Comment.objects.filter(id=id).first()
+        comment.comment_text = request.data["comment_text"]
+        comment.save()
+        # serializer= serializers.CommentSerializer(data=comment)
+        return Response(status=status.HTTP_200_OK)
+
+        """
         if len(kwargs) > 0:
             #print(kwargs)
             id = kwargs.get('slug')
@@ -268,18 +282,26 @@ class CommentsApiView(APIView):
             serializer= serializers.CommentSerializer(data=comment)
             return Response(serializer.data, status=status.HTTP_200_OK)
             
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_400_BAD_REQUEST)"""
     
     def delete(self, request, *args, **kwargs):
+
+        id=request.data["id"]
+        comment = models.Comment.objects.filter(id=id).first()
+        comment.delete()
+    
+        return Response(status=status.HTTP_200_OK)
+        """
         if len(kwargs) > 0:
             #print(kwargs)
             id = kwargs.get('slug')
-            comment = models.Comment.objects.filter(id=id)
+            comment = models.Comment.objects.filter(id=id).first()
             comment.delete()
         
             return Response(status=status.HTTP_200_OK)
         
         return Response(status=status.HTTP_400_BAD_REQUEST)
+        """
 
 
 class TrendingStocksApiView(APIView):
