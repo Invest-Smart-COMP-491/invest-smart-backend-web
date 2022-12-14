@@ -98,7 +98,7 @@ class News(models.Model):
 	asset = models.ForeignKey(Asset, default=None, verbose_name="Asset", on_delete=models.SET_DEFAULT)
 	thumbnail = models.URLField(default=None, null=True)
 	summary = models.TextField(null=True, blank=True)
-	mentioned_asset = models.ManyToManyField(Asset,related_name="mentioned_asset",symmetrical=False,blank=True)
+	mentioned_assets = models.ManyToManyField(Asset,related_name="mentioned_asset",symmetrical=False,blank=True)
 
 	def __str__(self):
 		return self.title
