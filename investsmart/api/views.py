@@ -8,6 +8,8 @@ from main import models,helper
 from . import serializers
 from accounts import models as accountModels
 from reco.stock_recommender import SimilarStocks, getPopularAssets
+from rest_framework import generics
+from rest_framework import filters
 
 
 
@@ -193,24 +195,31 @@ class CategoryApiView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class AssetsApiView(APIView):
-    def get(self, request, *args, **kwargs):
+class AssetsApiView(generics.ListAPIView):
+    search_fields = ['asset_name', 'asset_ticker']
+    filter_backends = (filters.SearchFilter,)
+    queryset = models.Asset.objects.all()
+    serializer_class = serializers.AssetSerializer
 
+    def get(self, request, *args, **kwargs):
+        
         if len(kwargs) > 0:
-            #print(kwargs)
             slug = kwargs.get('slug') 
             assets = [c.asset_ticker for c in models.Asset.objects.all()]
+
             if slug in assets: # if slug is asset_ticker
                 assets = models.Asset.objects.filter(asset_ticker=slug).first()
+                serializer = serializers.AssetSerializer(assets, many=False)
+
             else: # if slug is asset category, return asset array
                 assets = models.Asset.objects.filter(asset_category__slug=slug)
+                serializer = serializers.AssetSerializer(assets, many=True)
+            
+            return Response(serializer.data, status=status.HTTP_200_OK)
 
 
         else:
-            assets = models.Asset.objects.all()
-        
-        serializer = serializers.AssetSerializer(assets, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+            return self.list(request, *args, **kwargs)
     
     def post(self,request):
 

@@ -10,6 +10,7 @@ urlpatterns = [
     path("prices/<slug:slug>", views.PriceApiView.as_view(), name="asset_prices"),
     path("categories/", views.CategoryApiView.as_view()),
     path("assets/", views.AssetsApiView.as_view()),
+    path("assets", views.AssetsApiView.as_view()),
     path("assets/<slug:slug>", views.AssetsApiView.as_view()),
     path("trending-stocks/", views.TrendingStocksApiView.as_view()),
     path("comments/", views.CommentsApiView.as_view()),
