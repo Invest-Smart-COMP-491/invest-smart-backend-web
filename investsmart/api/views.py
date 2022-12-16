@@ -82,7 +82,7 @@ class UserFavouriteAssetsApiView(APIView):
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-    
+
     def delete(self, request, *args, **kwargs):
         # user = self.context.get("request").user # we need to decide on this : should we send username or django helps with this method? 
         user = accountModels.CustomUser.objects.filter(username=request.data["username"]).first()
@@ -95,6 +95,20 @@ class UserFavouriteAssetsApiView(APIView):
             return Response(status=status.HTTP_200_OK)
         
         return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserFavouriteAssetNewsApiView(APIView):
+    def get(self, request, *args, **kwargs):
+
+        # user = self.context.get("request").user # we need to decide on this : should we send username or django helps with this method? 
+        user = accountModels.CustomUser.objects.filter(username=request.data["username"]).first()
+        request.data
+        request.user
+        favouriteAssets = models.FavouriteAsset.objects.filter(user=user).values_list('asset__asset_ticker', flat=True) # list 
+        favouriteNews = models.News.objects.filter(asset__asset_ticker__in = favouriteAssets)
+        
+        serializer = serializers.NewsSerializer(favouriteNews, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK) # returns current user's liked asset news 
 
 
 
@@ -326,6 +340,18 @@ class TrendingStocksApiView(APIView):
 
     def post(self, request):
         pass
+
+class TrendingStockNewsApiView(APIView):
+    def get(self, request, *args, **kwargs):
+
+        top_n = 10 # top 10 assets, can be reassigned 
+		
+        top_assets = models.Asset.objects.all().order_by("-popularity")[:top_n].values_list('asset_ticker', flat=True) # list 
+        favouriteNews = models.News.objects.filter(asset__asset_ticker__in = top_assets)
+        
+        serializer = serializers.NewsSerializer(favouriteNews, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK) # returns current user's liked asset news 
+
 
 class UserApiView(APIView):
     """Returns the user information that is associated with the username passed as slug.

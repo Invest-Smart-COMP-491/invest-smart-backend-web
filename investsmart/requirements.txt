@@ -27,4 +27,4 @@ sqlalchemy
 gevent
 django_rest_framework
 pytz
-pysqlite3
+awsebcli
