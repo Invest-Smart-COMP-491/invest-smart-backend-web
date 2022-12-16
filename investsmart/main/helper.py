@@ -157,26 +157,22 @@ def createandUpdateNews(name, ticker, df_news):
 
 def updatePopularStocks():
 
+	Asset.objects.all().update(popularity=0)
+	
 	asset_ls = getPopularAssets()
 	top_assets = Asset.objects.filter(asset_ticker__in = asset_ls)
+	top_assets.update(popularity=100)
 	popular_asset_tickers = [c.asset_ticker for c in top_assets]
 
-	Asset.objects.all().update(popularity=0)
-	result = FavouriteAsset.objects.values('asset__asset_ticker').order_by('asset__asset_ticker').annotate(count=Count('asset__asset_ticker'))
-
-	# create a list of objects that need to be updated in bulk update
-	bulk_update_list = []
+	results = list(FavouriteAsset.objects.values('asset__asset_ticker').annotate(count=Count('asset__asset_ticker')).order_by('asset__asset_ticker'))
 	
-	for asset_ticker, count in result.items():
-		popularityPoint = 100 if (asset_ticker in popular_asset_tickers) else 0 # if asset is popular add 100 point popularity 
+	for result in results:
+		asset_ticker, count = result['asset__asset_ticker'],result['count']
+		# popularityPoint = 100 if (asset_ticker in popular_asset_tickers) else 0 # if asset is popular add 100 point popularity 
 		currAsset = Asset.objects.get(asset_ticker=asset_ticker)
-		currAsset.popularity = popularityPoint + count # increase popularity by 1 for each follower 
-
-		# append the updated asset object to the list
-		bulk_update_list.append(currAsset)
+		currAsset.popularity=count*10 # increase popularity by 10 for each follower 
+		currAsset.save()
 	
-	# update popularity of all assets in one operation
-	Asset.objects.bulk_update(bulk_update_list, ['popularity'])
 
 
 

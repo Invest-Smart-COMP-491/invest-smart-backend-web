@@ -54,7 +54,7 @@ class FavouriteAsset(models.Model):
 	favourite_date = models.DateTimeField("date added",default=timezone.now)
 
 	def __str__(self):
-		return self.user__username + " " + self.asset__asset_ticker
+		return self.user.username + " " + self.asset.asset_ticker
 
 	class Meta:
 
