@@ -419,3 +419,86 @@ class LoginAPI(KnoxLoginView):
         user = serializer.validated_data['user']
         login(request, user)
         return super(LoginAPI, self).post(request, format=None)
+
+
+class FavouriteAssetsApiView(APIView):
+    permission_classes = (permissions.AllowAny,)
+    def get(self, request, *args, **kwargs):
+        favouriteAssets = models.FavouriteAsset.objects.none()
+        if 'Authorization' in request.headers.keys():
+            token = request.headers['Authorization'].split(" ")[1][:8]
+            print(token)
+            authToken = AuthToken.objects.filter(token_key=token).first()
+            if authToken is not None:
+                favouriteAssets = models.FavouriteAsset.objects.filter(user=authToken.user).all()
+            
+            if len(favouriteAssets) > 0:
+                favouriteAssets = [f.asset for f in favouriteAssets]
+
+            serializer = serializers.AssetSerializer(favouriteAssets, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)        
+        
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
+    
+    def post(self, request, *args, **kwargs):
+        serializer = serializers.FavouriteAssetSerializer(None)
+        if 'Authorization' in request.headers.keys():
+            token = request.headers['Authorization'].split(" ")[1][:8]
+            authToken = AuthToken.objects.filter(token_key=token).first()
+            if authToken is not None:
+                user = authToken.user
+                if 'asset' in request.query_params:
+                    asset_ticker = request.query_params['asset']
+                    asset = models.Asset.objects.filter(asset_ticker = asset_ticker).first()
+                if user is not None and asset is not None:
+                    try:
+                        favAsset = models.FavouriteAsset(asset=asset,user=user)
+                        favAsset.save()
+                        serializer = serializers.FavouriteAssetSerializer(favAsset)
+                        return Response(serializer.data, status=status.HTTP_201_CREATED)
+                    except Exception as e:
+                        favAsset = models.FavouriteAsset.objects.filter(asset=asset,user=user).first()
+                        serializer = serializers.FavouriteAssetSerializer(favAsset)
+                        return Response(serializer.data, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+    def delete(self, request, *args, **kwargs):
+        if 'Authorization' in request.headers.keys():
+            token = request.headers['Authorization'].split(" ")[1][:8]
+            authToken = AuthToken.objects.filter(token_key=token).first()
+            if authToken is not None:
+                user = authToken.user
+                if 'asset' in request.query_params:
+                    asset_ticker = request.query_params['asset']
+                    asset = models.Asset.objects.filter(asset_ticker = asset_ticker).first()
+                if user is not None and asset is not None:
+                    try:
+                        favAsset = models.FavouriteAsset.objects.filter(asset=asset, user=user).first()
+                        favAsset.delete()
+                        return Response(status=status.HTTP_200_OK)
+                    except Exception as e:
+                        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+class FavouriteAssetsNewsApiView(APIView):
+    permission_classes = (permissions.AllowAny,)
+    def get(self, request, *args, **kwargs):
+        favouriteAssets = models.FavouriteAsset.objects.none()
+        favouriteNews = models.News.objects.none()
+        if 'Authorization' in request.headers.keys():
+            token = request.headers['Authorization'].split(" ")[1][:8]
+            print(token)
+            authToken = AuthToken.objects.filter(token_key=token).first()
+            if authToken is not None:
+                favouriteAssets = models.FavouriteAsset.objects.filter(user=authToken.user).values_list('asset__asset_ticker', flat=True)
+            
+            if len(favouriteAssets) > 0:
+                favouriteNews = models.News.objects.filter(asset__asset_ticker__in = favouriteAssets)
+
+            serializer = serializers.NewsSerializer(favouriteNews, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)        
+        
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
