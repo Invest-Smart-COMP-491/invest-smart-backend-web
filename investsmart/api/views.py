@@ -274,69 +274,55 @@ class CommentsApiView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK) 
         
         
-    def post(self,request):
-        
-        # user_id, asset_ticker , comment_text, (optional) parent_comment
+    def post(self, request):
+        if 'Authorization' in request.headers.keys():
+            token = request.headers['Authorization'].split(" ")[1][:8]
+            authToken = AuthToken.objects.filter(token_key=token).first()
+            try:
+                user = authToken.user
+                asset = models.Asset.objects.filter(asset_ticker=request.data["asset_ticker"]).first()
+                text = request.data["comment_text"]
+                parent_comment = None
+                if "parent_comment_id" in request.data:
+                    parent_comment_id = request.data["parent_comment_id"]
+                    parent_comment=models.Comment.objects.filter(id=parent_comment_id).first()
+                created_comment = models.Comment(user=user, asset=asset, comment_text=text, parent_comment=parent_comment)
+                created_comment.save()
+                return Response(status=status.HTTP_201_CREATED)
+            except Exception as e:
+                Response(status=status.HTTP_400_BAD_REQUEST)
 
-        # user = self.context.get("request").user # we need to decide on this : should we send user_id or django helps with this method? 
-        user = accountModels.CustomUser.objects.filter(username=request.data["username"]).first()
-        asset = models.Asset.objects.filter(asset_ticker=request.data["asset_ticker"]).first()
-        parent_comment = None
-        if "parent_comment_id" in request.data:
-            parent_comment_id = request.data["parent_comment_id"]
-            parent_comment=models.Comment.objects.filter(id=parent_comment_id).first()
-        
-        created_comment = models.Comment(user=user,asset=asset,comment_text=request.data["comment_text"],parent_comment=parent_comment)
-        created_comment.save()
-
-        return Response(status=status.HTTP_201_CREATED)
-        
-        #TODO: there is problem with serializer?
-        # serializer= serializers.CommentSerializer(data=created_comment)
-        #if serializer.is_valid():
-        #    serializer.save()
-        #    return Response(status=status.HTTP_201_CREATED)
-        # return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
     
     def put(self,request, *args, **kwargs):
-
-        id=request.data["id"]
-        comment = models.Comment.objects.filter(id=id).first()
-        comment.comment_text = request.data["comment_text"]
-        comment.save()
-        # serializer= serializers.CommentSerializer(data=comment)
-        return Response(status=status.HTTP_200_OK)
-
-        """
-        if len(kwargs) > 0:
-            #print(kwargs)
-            id = kwargs.get('slug')
-            comment = models.Comment.objects.filter(id=id)
-            comment.comment_text=request.data["comment_text"]
-            comment.save()
-            serializer= serializers.CommentSerializer(data=comment)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-            
-        return Response(status=status.HTTP_400_BAD_REQUEST)"""
+        if 'Authorization' in request.headers.keys():
+            token = request.headers['Authorization'].split(" ")[1][:8]
+            authToken = AuthToken.objects.filter(token_key=token).first()
+            try:
+                user = authToken.user
+                id = request.data["id"]
+                text = request.data["comment_text"]
+                comment = models.Comment.objects.filter(id=id, user=user).first()
+                comment.comment_text = text
+                comment.save()
+                return Response(status=status.HTTP_200_OK)
+            except Exception as e:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
     
     def delete(self, request, *args, **kwargs):
-
-        id=request.data["id"]
-        comment = models.Comment.objects.filter(id=id).first()
-        comment.delete()
-    
-        return Response(status=status.HTTP_200_OK)
-        """
-        if len(kwargs) > 0:
-            #print(kwargs)
-            id = kwargs.get('slug')
-            comment = models.Comment.objects.filter(id=id).first()
-            comment.delete()
-        
-            return Response(status=status.HTTP_200_OK)
-        
-        return Response(status=status.HTTP_400_BAD_REQUEST)
-        """
+        if 'Authorization' in request.headers.keys():
+            token = request.headers['Authorization'].split(" ")[1][:8]
+            authToken = AuthToken.objects.filter(token_key=token).first()
+            try:
+                user = authToken.user
+                id = request.data["id"]
+                comment = models.Comment.objects.filter(id=id, user=user).first()
+                comment.delete()
+                return Response(status=status.HTTP_200_OK)
+            except Exception as e:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
 
 
 class TrendingStocksApiView(APIView):
