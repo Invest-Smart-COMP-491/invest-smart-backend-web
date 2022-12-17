@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from main import models
-
+from accounts import models as accountModels
+from django.contrib.auth import authenticate
 class NewsSerializer(serializers.ModelSerializer):
     asset_ticker = serializers.CharField(source='asset.asset_ticker')
     class Meta:
@@ -70,7 +71,17 @@ class AllAssetPriceSerializer(serializers.ModelSerializer):
         #fields = ["asset_name", "asset_ticker", "last_price"]
 
 class UserSerializer(serializers.ModelSerializer):
-    username = serializers.CharField(source='user.username')
     class Meta:
         model = models.CustomUser
         fields = "__all__"
+
+class RegisterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = accountModels.CustomUser
+        fields = "__all__"
+        extra_kwargs = {'password': {'write_only': True}}
+
+    def create(self, validated_data):
+        user = accountModels.CustomUser.objects.create_user(validated_data['username'], validated_data['email'], validated_data['password'])
+
+        return user

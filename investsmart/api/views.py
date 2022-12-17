@@ -10,10 +10,15 @@ from accounts import models as accountModels
 from reco.stock_recommender import SimilarStocks, getPopularAssets
 from rest_framework import generics
 from rest_framework import filters
+from knox.models import AuthToken
+from knox.views import LoginView as KnoxLoginView
+from django.contrib.auth import login
+from rest_framework.authtoken.serializers import AuthTokenSerializer
 
 
 
 class NewsApiView(APIView):
+    permission_classes = (permissions.AllowAny,)
     # add permission to check if user is authenticated
     #permission_classes = [permissions.IsAuthenticated]
 
@@ -44,6 +49,7 @@ class NewsApiView(APIView):
 
 
 class UserFavouriteAssetsApiView(APIView):
+    permission_classes = (permissions.AllowAny,)
     def get(self, request, *args, **kwargs):
 
         # user = self.context.get("request").user # we need to decide on this : should we send username or django helps with this method? 
@@ -98,6 +104,7 @@ class UserFavouriteAssetsApiView(APIView):
 
 
 class UserFavouriteAssetNewsApiView(APIView):
+    permission_classes = (permissions.AllowAny,)
     def get(self, request, *args, **kwargs):
 
         # user = self.context.get("request").user # we need to decide on this : should we send username or django helps with this method? 
@@ -113,6 +120,7 @@ class UserFavouriteAssetNewsApiView(APIView):
 
 
 class UserFavouriteCategoryApiView(APIView):
+    permission_classes = (permissions.AllowAny,)
     def get(self, request, *args, **kwargs):
 
         # user = self.context.get("request").user # we need to decide on this : should we send username or django helps with this method? 
@@ -165,7 +173,8 @@ class UserFavouriteCategoryApiView(APIView):
         
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
-class PriceApiView(APIView): 
+class PriceApiView(APIView):
+    permission_classes = (permissions.AllowAny,)
     def get(self, request, *args, **kwargs):
 
         serializer = None
@@ -194,6 +203,7 @@ class PriceApiView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class CategoryApiView(APIView):
+    permission_classes = (permissions.AllowAny,)
     def get(self, request, *args, **kwargs):
         categories = models.AssetCategory.objects.all()
         
@@ -210,6 +220,7 @@ class CategoryApiView(APIView):
 
 
 class AssetsApiView(generics.ListAPIView):
+    permission_classes = (permissions.AllowAny,)
     search_fields = ['asset_name', 'asset_ticker']
     filter_backends = (filters.SearchFilter,)
     queryset = models.Asset.objects.all()
@@ -244,6 +255,7 @@ class AssetsApiView(generics.ListAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class CommentsApiView(APIView):
+    permission_classes = (permissions.AllowAny,)
     def get(self, request, *args, **kwargs):
         if len(kwargs) > 0:
             #print(kwargs)
@@ -328,6 +340,7 @@ class CommentsApiView(APIView):
 
 
 class TrendingStocksApiView(APIView):
+    permission_classes = (permissions.AllowAny,)
     def get(self, request, *args, **kwargs):
         top_n = 10 # top 10 news, can be reassigned 
 		
@@ -342,6 +355,7 @@ class TrendingStocksApiView(APIView):
         pass
 
 class TrendingStockNewsApiView(APIView):
+    permission_classes = (permissions.AllowAny,)
     def get(self, request, *args, **kwargs):
 
         top_n = 10 # top 10 assets, can be reassigned 
@@ -356,6 +370,7 @@ class TrendingStockNewsApiView(APIView):
 class UserApiView(APIView):
     """Returns the user information that is associated with the username passed as slug.
     Might be good idea to fetch all user comments and favorites as well."""
+    permission_classes = (permissions.AllowAny,)
     def get(self, request, *args, **kwargs):
         slug = kwargs.get('slug')
         ret = models.CustomUser.objects.filter(username=slug)
@@ -368,6 +383,7 @@ class UserApiView(APIView):
 
 """
 class CommentsLikesApiView(APIView):
+    permission_classes = (permissions.AllowAny,)
     def get(self, request, *args, **kwargs):
         if len(kwargs) > 0:
             #print(kwargs)
@@ -380,3 +396,26 @@ class CommentsLikesApiView(APIView):
         serializer = serializers.CommentLikeSerializer(commentslikes, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 """
+
+class RegisterAPI(generics.GenericAPIView):
+    permission_classes = (permissions.AllowAny,)
+    serializer_class = serializers.RegisterSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        return Response({
+        "user": serializers.UserSerializer(user, context=self.get_serializer_context()).data,
+        "token": AuthToken.objects.create(user)[1]
+        })
+
+class LoginAPI(KnoxLoginView):
+    permission_classes = (permissions.AllowAny,)
+
+    def post(self, request, format=None):
+        serializer = AuthTokenSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        login(request, user)
+        return super(LoginAPI, self).post(request, format=None)
