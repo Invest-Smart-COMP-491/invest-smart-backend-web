@@ -28,3 +28,4 @@ gevent
 django_rest_framework
 pytz
 sqlite
+django-rest-knox
