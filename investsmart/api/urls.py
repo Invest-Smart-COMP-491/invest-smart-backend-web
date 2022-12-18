@@ -29,6 +29,6 @@ urlpatterns = [
     path('logout/', knox_views.LogoutView.as_view(), name='logout'),
     path('logoutall/', knox_views.LogoutAllView.as_view(), name='logoutall'),
     path("favourite", views.FavouriteAssetsApiView.as_view(), name="favourite_assets"),
-    path("favourite/news", views.FavouriteAssetsNewsApiView.as_view(), name="favourite_assets"),
-    
+    path("favourite/", views.FavouriteAssetsApiView.as_view(), name="favourite_assets"),
+    path("favourite/news/", views.FavouriteAssetsNewsApiView.as_view(), name="favourite_assets"),    
 ]

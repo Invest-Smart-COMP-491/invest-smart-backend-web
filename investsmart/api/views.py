@@ -413,7 +413,6 @@ class FavouriteAssetsApiView(APIView):
         favouriteAssets = models.FavouriteAsset.objects.none()
         if 'Authorization' in request.headers.keys():
             token = request.headers['Authorization'].split(" ")[1][:8]
-            print(token)
             authToken = AuthToken.objects.filter(token_key=token).first()
             if authToken is not None:
                 favouriteAssets = models.FavouriteAsset.objects.filter(user=authToken.user).all()
@@ -476,7 +475,6 @@ class FavouriteAssetsNewsApiView(APIView):
         favouriteNews = models.News.objects.none()
         if 'Authorization' in request.headers.keys():
             token = request.headers['Authorization'].split(" ")[1][:8]
-            print(token)
             authToken = AuthToken.objects.filter(token_key=token).first()
             if authToken is not None:
                 favouriteAssets = models.FavouriteAsset.objects.filter(user=authToken.user).values_list('asset__asset_ticker', flat=True)
