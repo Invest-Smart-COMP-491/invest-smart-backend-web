@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- Favicon Linkup -->
-    <link rel="shortcut icon" href="./img/logo2.png" type="image/x-icon" />
+    <link rel="shortcut icon" href="static/main/img/logo2.png" type="image/x-icon" />
     <!-- Documes Title -->
     <title>Home</title>
     <!-- Google Fonts Linkup -->
@@ -30,7 +30,7 @@
       href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css"
     />
     <!-- Css File Linkup -->
-    <link rel="stylesheet" href="./css/output.css" />
+    <link rel="stylesheet" href="static/main/css/output.css" />
 
     <!-- Internal Css -->
     <style>
@@ -62,9 +62,9 @@
       >
         <!-- Logo -->
         <div class="md:w-full w-3/12 cursor-pointer">
-          <a href="index.html">
+          <a href="/">
             <img
-              src="./img/logo2.png"
+              src="static/main/img/logo2.png"
               alt="site_logo"
               class="w-14 md:w-20 lg:w-24"
             />
@@ -85,7 +85,7 @@
 
         <!-- Text -->
         <div class="md:w-full w-3/12 text-end">
-          <a href="stocks.html">
+          <a href="/download">
             <h1
               class="font-semibold text-white text-sm md:text-lg lg:text-xl cursor-pointer"
             >
@@ -102,123 +102,17 @@
         <div class="slide-container py-4 swiper">
           <div class="slide-content mx-8 md:mx-14 overflow-hidden">
             <div class="card-wrapper swiper-wrapper">
-              <!-- Single Box -->
-              <div
-                class="shadow-lg py-3 border rounded-md w-full text-center swiper-slide"
-              >
-                <h1 class="text-2xl font-medium">THY</h1>
-                <span class="text-2xl font-medium" style="color: #22b871"
-                  >+3.2%</span
-                >
-              </div>
-              <!-- Single Box -->
-              <div
-                class="shadow-lg py-3 border rounded-md w-full text-center swiper-slide"
-              >
-                <h1 class="text-2xl font-medium">THY</h1>
-                <span class="text-2xl font-medium" style="color: #22b871"
-                  >+3.2%</span
-                >
-              </div>
-              <!-- Single Box -->
-              <div
-                class="shadow-lg py-3 border rounded-md w-full text-center swiper-slide"
-              >
-                <h1 class="text-2xl font-medium">THY</h1>
-                <span class="text-2xl font-medium" style="color: #22b871"
-                  >+3.2%</span
-                >
-              </div>
-              <!-- Single Box -->
-              <div
-                class="shadow-lg py-3 border rounded-md w-full text-center swiper-slide"
-              >
-                <h1 class="text-2xl font-medium">THY</h1>
-                <span class="text-2xl font-medium" style="color: #22b871"
-                  >+3.2%</span
-                >
-              </div>
-              <!-- Single Box -->
-              <div
-                class="shadow-lg py-3 border rounded-md w-full text-center swiper-slide"
-              >
-                <h1 class="text-2xl font-medium">THY</h1>
-                <span class="text-2xl font-medium" style="color: #22b871"
-                  >+3.2%</span
-                >
-              </div>
-              <!-- Single Box -->
-              <div
-                class="shadow-lg py-3 border rounded-md w-full text-center swiper-slide"
-              >
-                <h1 class="text-2xl font-medium">THY</h1>
-                <span class="text-2xl font-medium" style="color: #22b871"
-                  >+3.2%</span
-                >
-              </div>
-              <!-- Single Box -->
-              <div
-                class="shadow-lg py-3 border rounded-md w-full text-center swiper-slide"
-              >
-                <h1 class="text-2xl font-medium">THY</h1>
-                <span class="text-2xl font-medium" style="color: #22b871"
-                  >+3.2%</span
-                >
-              </div>
-              <!-- Single Box -->
-              <div
-                class="shadow-lg py-3 border rounded-md w-full text-center swiper-slide"
-              >
-                <h1 class="text-2xl font-medium">THY</h1>
-                <span class="text-2xl font-medium" style="color: #22b871"
-                  >+3.2%</span
-                >
-              </div>
-              <!-- Single Box -->
-              <div
-                class="shadow-lg py-3 border rounded-md w-full text-center swiper-slide"
-              >
-                <h1 class="text-2xl font-medium">THY</h1>
-                <span class="text-2xl font-medium" style="color: #22b871"
-                  >+3.2%</span
-                >
-              </div>
-              <!-- Single Box -->
-              <div
-                class="shadow-lg py-3 border rounded-md w-full text-center swiper-slide"
-              >
-                <h1 class="text-2xl font-medium">THY</h1>
-                <span class="text-2xl font-medium" style="color: #22b871"
-                  >+3.2%</span
-                >
-              </div>
-              <!-- Single Box -->
-              <div
-                class="shadow-lg py-3 border rounded-md w-full text-center swiper-slide"
-              >
-                <h1 class="text-2xl font-medium">THY</h1>
-                <span class="text-2xl font-medium" style="color: #22b871"
-                  >+3.2%</span
-                >
-              </div>
-              <!-- Single Box -->
-              <div
-                class="shadow-lg py-3 border rounded-md w-full text-center swiper-slide"
-              >
-                <h1 class="text-2xl font-medium">THY</h1>
-                <span class="text-2xl font-medium" style="color: #22b871"
-                  >+3.2%</span
-                >
-              </div>
-              <!-- Single Box -->
-              <div
-                class="shadow-lg py-3 border rounded-md w-full text-center swiper-slide"
-              >
-                <h1 class="text-2xl font-medium">THY</h1>
-                <span class="text-2xl font-medium" style="color: #22b871"
-                  >+3.2%</span
-                >
-              </div>
+              {% for asset in top_assets %}
+                <!-- Single Box -->
+                <div class="shadow-lg py-3 border rounded-md w-full text-center swiper-slide">
+                  <a href= "asset/{{asset.asset_ticker}}">
+                    <h1 class="text-2xl font-medium">{{asset.asset_ticker}}</h1>
+                    <span class="text-2xl font-medium" style="color: #22b871">
+                      {{asset.last_price|floatformat:2}} USD
+                    </span>
+                  </a>
+                </div>
+              {% endfor %}
             </div>
           </div>
           <div class="swiper-button-next swiper-navBtn"></div>
@@ -234,245 +128,20 @@
           DAILY NEWS
         </h1>
         <div class="overflow-x-hidden overflow-y-scroll h-full mt-4">
-          <!-- Box 1 -->
-          <div class="lg:pr-10 cursor-pointer mb-6 lg:px-8 px-2">
-            <h2 class="text-xl font-medium mb-2 text-center">
-              Ciddi Haber Basligi
-            </h2>
-            <div class="h-[50px] overflow-hidden">
-              <span class="text-sm text-gray-500">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Similique voluptate in maxime porro, totam sit voluptatum eius
-                modi tempora consectetur est sequi ex, voluptatem debitis quam.
-                Maxime, inventore enim? Earum voluptatibus consequatur quae
-                maiores corrupti consectetur libero minus nobis necessitatibus
-                distinctio labore, blanditiis cum harum quia ducimus. Ea
-                incidunt est nobis minus facilis officiis blanditiis dolore
-                deleniti voluptatum iste. Aperiam quisquam temporibus voluptatum
-                sapiente non provident repudiandae magni veniam minus earum.
-                Libero nulla non ipsa eum numquam et dignissimos optio doloribus
-                minus placeat officia aliquid, maxime obcaecati, quia odio
-                excepturi a ipsum distinctio id beatae rem sequi! Ut, ex quia.
-              </span>
+          {% for news in top_news %}
+            <!-- Box 1 -->
+            <div class="lg:pr-10 cursor-pointer mt-6">
+              <a href= "{{news.url}}">
+                <h2 class="text-xl font-medium">
+                  {{news.title}}
+                </h2>
+                <span class="text-sm text-gray-500">
+                  {{news.summary}}
+                </span>
+                <hr class="lg:w-[80%] mt-4" />
+              </a>
             </div>
-            <hr class="mt-4" />
-          </div>
-
-          <!-- Box 2 -->
-          <div class="lg:pr-10 cursor-pointer mb-6 lg:px-8 px-2">
-            <h2 class="text-xl font-medium mb-2 text-center">
-              Ciddi Haber Basligi
-            </h2>
-            <div class="h-[50px] overflow-hidden">
-              <span class="text-sm text-gray-500">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Similique voluptate in maxime porro, totam sit voluptatum eius
-                modi tempora consectetur est sequi ex, voluptatem debitis quam.
-                Maxime, inventore enim? Earum voluptatibus consequatur quae
-                maiores corrupti consectetur libero minus nobis necessitatibus
-                distinctio labore, blanditiis cum harum quia ducimus. Ea
-                incidunt est nobis minus facilis officiis blanditiis dolore
-                deleniti voluptatum iste. Aperiam quisquam temporibus voluptatum
-                sapiente non provident repudiandae magni veniam minus earum.
-                Libero nulla non ipsa eum numquam et dignissimos optio doloribus
-                minus placeat officia aliquid, maxime obcaecati, quia odio
-                excepturi a ipsum distinctio id beatae rem sequi! Ut, ex quia.
-              </span>
-            </div>
-            <hr class="mt-4" />
-          </div>
-
-          <!-- Box 3 -->
-          <div class="lg:pr-10 cursor-pointer mb-6 lg:px-8 px-2">
-            <h2 class="text-xl font-medium mb-2 text-center">
-              Ciddi Haber Basligi
-            </h2>
-            <div class="h-[50px] overflow-hidden">
-              <span class="text-sm text-gray-500">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Similique voluptate in maxime porro, totam sit voluptatum eius
-                modi tempora consectetur est sequi ex, voluptatem debitis quam.
-                Maxime, inventore enim? Earum voluptatibus consequatur quae
-                maiores corrupti consectetur libero minus nobis necessitatibus
-                distinctio labore, blanditiis cum harum quia ducimus. Ea
-                incidunt est nobis minus facilis officiis blanditiis dolore
-                deleniti voluptatum iste. Aperiam quisquam temporibus voluptatum
-                sapiente non provident repudiandae magni veniam minus earum.
-                Libero nulla non ipsa eum numquam et dignissimos optio doloribus
-                minus placeat officia aliquid, maxime obcaecati, quia odio
-                excepturi a ipsum distinctio id beatae rem sequi! Ut, ex quia.
-              </span>
-            </div>
-            <hr class="mt-4" />
-          </div>
-
-          <!-- Box 4 -->
-          <div class="lg:pr-10 cursor-pointer mb-6 lg:px-8 px-2">
-            <h2 class="text-xl font-medium mb-2 text-center">
-              Ciddi Haber Basligi
-            </h2>
-            <div class="h-[50px] overflow-hidden">
-              <span class="text-sm text-gray-500">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Similique voluptate in maxime porro, totam sit voluptatum eius
-                modi tempora consectetur est sequi ex, voluptatem debitis quam.
-                Maxime, inventore enim? Earum voluptatibus consequatur quae
-                maiores corrupti consectetur libero minus nobis necessitatibus
-                distinctio labore, blanditiis cum harum quia ducimus. Ea
-                incidunt est nobis minus facilis officiis blanditiis dolore
-                deleniti voluptatum iste. Aperiam quisquam temporibus voluptatum
-                sapiente non provident repudiandae magni veniam minus earum.
-                Libero nulla non ipsa eum numquam et dignissimos optio doloribus
-                minus placeat officia aliquid, maxime obcaecati, quia odio
-                excepturi a ipsum distinctio id beatae rem sequi! Ut, ex quia.
-              </span>
-            </div>
-            <hr class="mt-4" />
-          </div>
-
-          <!-- Box 5 -->
-          <div class="lg:pr-10 cursor-pointer mb-6 lg:px-8 px-2">
-            <h2 class="text-xl font-medium mb-2 text-center">
-              Ciddi Haber Basligi
-            </h2>
-            <div class="h-[50px] overflow-hidden">
-              <span class="text-sm text-gray-500">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Similique voluptate in maxime porro, totam sit voluptatum eius
-                modi tempora consectetur est sequi ex, voluptatem debitis quam.
-                Maxime, inventore enim? Earum voluptatibus consequatur quae
-                maiores corrupti consectetur libero minus nobis necessitatibus
-                distinctio labore, blanditiis cum harum quia ducimus. Ea
-                incidunt est nobis minus facilis officiis blanditiis dolore
-                deleniti voluptatum iste. Aperiam quisquam temporibus voluptatum
-                sapiente non provident repudiandae magni veniam minus earum.
-                Libero nulla non ipsa eum numquam et dignissimos optio doloribus
-                minus placeat officia aliquid, maxime obcaecati, quia odio
-                excepturi a ipsum distinctio id beatae rem sequi! Ut, ex quia.
-              </span>
-            </div>
-            <hr class="mt-4" />
-          </div>
-
-          <!-- Box 6 lg:px-8 px-2 -->
-          <div class="lg:pr-10 cursor-pointer mb-6 lg:px-8 px-2">
-            <h2 class="text-xl font-medium mb-2 text-center">
-              Ciddi Haber Basligi
-            </h2>
-            <div class="h-[50px] overflow-hidden">
-              <span class="text-sm text-gray-500">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Similique voluptate in maxime porro, totam sit voluptatum eius
-                modi tempora consectetur est sequi ex, voluptatem debitis quam.
-                Maxime, inventore enim? Earum voluptatibus consequatur quae
-                maiores corrupti consectetur libero minus nobis necessitatibus
-                distinctio labore, blanditiis cum harum quia ducimus. Ea
-                incidunt est nobis minus facilis officiis blanditiis dolore
-                deleniti voluptatum iste. Aperiam quisquam temporibus voluptatum
-                sapiente non provident repudiandae magni veniam minus earum.
-                Libero nulla non ipsa eum numquam et dignissimos optio doloribus
-                minus placeat officia aliquid, maxime obcaecati, quia odio
-                excepturi a ipsum distinctio id beatae rem sequi! Ut, ex quia.
-              </span>
-            </div>
-            <hr class="mt-4" />
-          </div>
-
-          <!-- Box 7 -->
-          <div class="lg:pr-10 cursor-pointer mb-6 lg:px-8 px-2">
-            <h2 class="text-xl font-medium mb-2 text-center">
-              Ciddi Haber Basligi
-            </h2>
-            <div class="h-[50px] overflow-hidden">
-              <span class="text-sm text-gray-500">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Similique voluptate in maxime porro, totam sit voluptatum eius
-                modi tempora consectetur est sequi ex, voluptatem debitis quam.
-                Maxime, inventore enim? Earum voluptatibus consequatur quae
-                maiores corrupti consectetur libero minus nobis necessitatibus
-                distinctio labore, blanditiis cum harum quia ducimus. Ea
-                incidunt est nobis minus facilis officiis blanditiis dolore
-                deleniti voluptatum iste. Aperiam quisquam temporibus voluptatum
-                sapiente non provident repudiandae magni veniam minus earum.
-                Libero nulla non ipsa eum numquam et dignissimos optio doloribus
-                minus placeat officia aliquid, maxime obcaecati, quia odio
-                excepturi a ipsum distinctio id beatae rem sequi! Ut, ex quia.
-              </span>
-            </div>
-            <hr class="mt-4" />
-          </div>
-
-          <!-- Box 8 -->
-          <div class="lg:pr-10 cursor-pointer mb-6 lg:px-8 px-2">
-            <h2 class="text-xl font-medium mb-2 text-center">
-              Ciddi Haber Basligi
-            </h2>
-            <div class="h-[50px] overflow-hidden">
-              <span class="text-sm text-gray-500">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Similique voluptate in maxime porro, totam sit voluptatum eius
-                modi tempora consectetur est sequi ex, voluptatem debitis quam.
-                Maxime, inventore enim? Earum voluptatibus consequatur quae
-                maiores corrupti consectetur libero minus nobis necessitatibus
-                distinctio labore, blanditiis cum harum quia ducimus. Ea
-                incidunt est nobis minus facilis officiis blanditiis dolore
-                deleniti voluptatum iste. Aperiam quisquam temporibus voluptatum
-                sapiente non provident repudiandae magni veniam minus earum.
-                Libero nulla non ipsa eum numquam et dignissimos optio doloribus
-                minus placeat officia aliquid, maxime obcaecati, quia odio
-                excepturi a ipsum distinctio id beatae rem sequi! Ut, ex quia.
-              </span>
-            </div>
-            <hr class="mt-4" />
-          </div>
-
-          <!-- Box 9 -->
-          <div class="lg:pr-10 cursor-pointer mb-6 lg:px-8 px-2">
-            <h2 class="text-xl font-medium mb-2 text-center">
-              Ciddi Haber Basligi
-            </h2>
-            <div class="h-[50px] overflow-hidden">
-              <span class="text-sm text-gray-500">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Similique voluptate in maxime porro, totam sit voluptatum eius
-                modi tempora consectetur est sequi ex, voluptatem debitis quam.
-                Maxime, inventore enim? Earum voluptatibus consequatur quae
-                maiores corrupti consectetur libero minus nobis necessitatibus
-                distinctio labore, blanditiis cum harum quia ducimus. Ea
-                incidunt est nobis minus facilis officiis blanditiis dolore
-                deleniti voluptatum iste. Aperiam quisquam temporibus voluptatum
-                sapiente non provident repudiandae magni veniam minus earum.
-                Libero nulla non ipsa eum numquam et dignissimos optio doloribus
-                minus placeat officia aliquid, maxime obcaecati, quia odio
-                excepturi a ipsum distinctio id beatae rem sequi! Ut, ex quia.
-              </span>
-            </div>
-            <hr class="mt-4" />
-          </div>
-
-          <!-- Box 10 -->
-          <div class="lg:pr-10 cursor-pointer mb-6 lg:px-8 px-2">
-            <h2 class="text-xl font-medium mb-2 text-center">
-              Ciddi Haber Basligi
-            </h2>
-            <div class="h-[50px] overflow-hidden">
-              <span class="text-sm text-gray-500">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Similique voluptate in maxime porro, totam sit voluptatum eius
-                modi tempora consectetur est sequi ex, voluptatem debitis quam.
-                Maxime, inventore enim? Earum voluptatibus consequatur quae
-                maiores corrupti consectetur libero minus nobis necessitatibus
-                distinctio labore, blanditiis cum harum quia ducimus. Ea
-                incidunt est nobis minus facilis officiis blanditiis dolore
-                deleniti voluptatum iste. Aperiam quisquam temporibus voluptatum
-                sapiente non provident repudiandae magni veniam minus earum.
-                Libero nulla non ipsa eum numquam et dignissimos optio doloribus
-                minus placeat officia aliquid, maxime obcaecati, quia odio
-                excepturi a ipsum distinctio id beatae rem sequi! Ut, ex quia.
-              </span>
-            </div>
-            <hr class="mt-4" />
-          </div>
+          {% endfor %}
         </div>
       </div>
       <!-- Daily News End -->
@@ -480,6 +149,6 @@
 
     <!-- Swiper Js -->
     <script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
-    <script src="./js/main.js"></script>
+    <script src="static/main/js/main.js"></script>
   </body>
 </html>

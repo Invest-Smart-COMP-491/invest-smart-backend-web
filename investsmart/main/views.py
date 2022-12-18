@@ -16,7 +16,7 @@ from api import serializers
 
 class HomeView(View):
 
-	template_name = "main/index.html"
+	template_name = "main/newindex.html"
 
 	def get(self,request,*args,**kwargs):
 		
@@ -40,7 +40,7 @@ class HomeView(View):
 		# return render(request=request,template_name=self.template_name,context={models.AssetCategory.objects.all})
 
 	def post(self, request, *args, **kwargs):
-		return HttpResponse("Page Loaded") 
+		return HttpResponse("Page Loaded")
 
 class updateAssetsView(View):
 	template_name = "main/home.html"
@@ -92,7 +92,8 @@ class categoryView(View):
 
 class AssetDetailView(View):
 	model = models.Asset
-	template_name = "main/asset_detail.html"
+	#template_name = "main/asset_detail.html"
+	template_name = "main/stocks.html"
 
 	def get(self,request,*args,**kwargs):
 		if len(kwargs) > 0:
@@ -100,13 +101,16 @@ class AssetDetailView(View):
 			assets = [c.asset_ticker for c in models.Asset.objects.all()]
 			if slug in assets:
 
+				top_n = 10
+				top_assets = models.Asset.objects.all().order_by("-popularity")[:top_n]
+				
 				asset = models.Asset.objects.filter(asset_ticker=slug).first()
 				asset.view_count += 1 
 				asset.save()
-				all_news = models.News.objects.filter(asset=asset)
+				asset_news = models.News.objects.filter(asset=asset)
 				assetPrices = getAssetPrice(slug)  # do not save to the database directly gets from api 
 				assetPrices = serializers.AssetPriceSerializer(assetPrices, many=True)
-				return render(request,template_name=self.template_name,context={"asset": asset, "all_news":all_news,"asset_prices":assetPrices})
+				return render(request,template_name=self.template_name,context={"asset": asset, "asset_news":asset_news,"asset_prices":assetPrices, "top_assets":top_assets})
 		else:
 			all_assets = models.Asset.objects.all()
 			return render(request,template_name=self.template_name,context={"asset": all_assets}) #can be handled in in HTML 
