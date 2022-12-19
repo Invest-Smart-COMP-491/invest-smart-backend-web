@@ -63,6 +63,10 @@ class LivePrice:
         data = data.reset_index().rename(columns = {'index':'date_time'})
         return data
 
+    def getHistory(self, period="2y", interval="1d"):
+        prices = yf.Ticker(self.stock_name).history(period=period, interval=interval).reset_index().rename(columns = {'index':'date_time'})
+        return prices
+
     def getCompanyInfo(self):
         stock = yf.Ticker(self.stock_name)
         info_dict = stock.info

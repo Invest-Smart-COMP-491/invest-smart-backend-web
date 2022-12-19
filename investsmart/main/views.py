@@ -108,9 +108,7 @@ class AssetDetailView(View):
 				asset.view_count += 1 
 				asset.save()
 				asset_news = models.News.objects.filter(asset=asset)
-				assetPrices = getAssetPrice(slug)  # do not save to the database directly gets from api 
-				assetPrices = serializers.AssetPriceSerializer(assetPrices, many=True)
-				return render(request,template_name=self.template_name,context={"asset": asset, "asset_news":asset_news,"asset_prices":assetPrices, "top_assets":top_assets})
+				return render(request,template_name=self.template_name,context={"asset": asset, "asset_news":asset_news, "top_assets":top_assets})
 		else:
 			all_assets = models.Asset.objects.all()
 			return render(request,template_name=self.template_name,context={"asset": all_assets}) #can be handled in in HTML 

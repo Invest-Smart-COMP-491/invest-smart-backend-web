@@ -72,7 +72,10 @@ class FavouriteAsset(models.Model):
 class AssetPrice(models.Model):
 	asset = models.ForeignKey(Asset, default=None, verbose_name="Asset", on_delete=models.CASCADE)
 	date_time = models.DateTimeField("price time",default=timezone.now)
-	price = models.FloatField(default=0)
+	open = models.FloatField(default=0)
+	high = models.FloatField(default=0)
+	low = models.FloatField(default=0)
+	close = models.FloatField(default=0)
 	volume = models.FloatField(default=0)
 
 	def __str__(self):

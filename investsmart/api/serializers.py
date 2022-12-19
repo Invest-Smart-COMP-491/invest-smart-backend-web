@@ -56,12 +56,9 @@ class CommentLikeSerializer(serializers.ModelSerializer):
 """
 
 class AssetPriceSerializer(serializers.ModelSerializer):
-    asset_name = serializers.CharField(source='asset.asset_name')
-    asset_ticker = serializers.CharField(source='asset.asset_ticker')
     class Meta:
         model = models.AssetPrice
         fields = "__all__"
-        #fields = ["asset_name","asset_ticker", "date_time","price","volume"]
 
 class AllAssetPriceSerializer(serializers.ModelSerializer):
 
