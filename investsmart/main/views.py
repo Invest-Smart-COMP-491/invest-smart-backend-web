@@ -225,4 +225,16 @@ class AssetPriceView(View):
 
 
 
+class PlotView(View):
+	template_name = "main/plot.html"
 
+	def get(self,request,*args,**kwargs):
+		if len(kwargs) > 0:
+			slug = kwargs.get('slug')
+			assets = [c.asset_ticker for c in models.Asset.objects.all()]
+			if slug in assets:
+				asset = models.Asset.objects.filter(asset_ticker=slug).first()
+				return render(request,template_name=self.template_name,context={"asset": asset})
+		
+		return  HttpResponse(f"{slug} does not correspond to anything.")
+		
