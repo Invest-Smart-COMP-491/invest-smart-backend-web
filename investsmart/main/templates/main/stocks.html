@@ -163,13 +163,18 @@
               <script type="text/javascript" src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
               <script type="text/javascript" src="https://canvasjs.com/assets/script/canvasjs.stock.min.js"></script>
               <script type="text/javascript">
+              function decodeHTMLEntities(text) {
+                let textArea = document.createElement('textarea');
+                textArea.innerHTML = text;
+                return textArea.value;
+              }
               window.onload = function () {
                 var dataPoints1 = [], dataPoints2 = [], dataPoints3 = [];
                 var stockChart = new CanvasJS.StockChart("chartContainer",{
                   exportEnabled: true,
                   theme: "light2",
                   title:{
-                    text:"{{asset.asset_name}}".replace("&amp;", "&")
+                    text:decodeHTMLEntities("{{asset.asset_name}}")
                   },
                   charts: [{
                     toolTip: {
