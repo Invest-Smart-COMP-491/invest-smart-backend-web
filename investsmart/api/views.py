@@ -258,11 +258,16 @@ class CommentsApiView(APIView):
     permission_classes = (permissions.AllowAny,)
     def get(self, request, *args, **kwargs):
         if len(kwargs) > 0:
-            #print(kwargs)
             ticker = kwargs.get('slug')
             asset = models.Asset.objects.filter(asset_ticker=ticker).first()
             comments = models.Comment.objects.filter(asset=asset)
-
+            if 'parent_comment' in request.query_params:
+                parent_comment_id = request.query_params["parent_comment"]
+                if parent_comment_id == '':
+                    comments = comments.filter(parent_comment=None)
+                else:
+                    parent_comment = models.Comment.objects.filter(id=parent_comment_id).first()
+                    comments = comments.filter(parent_comment=parent_comment)
             serializer = serializers.CommentSerializer(comments, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         
