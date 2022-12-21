@@ -11,6 +11,11 @@
         src="https://canvasjs.com/assets/script/canvasjs.stock.min.js"
       ></script>
       <script type="text/javascript">
+        function decodeHTMLEntities(text) {
+          let textArea = document.createElement('textarea');
+          textArea.innerHTML = text;
+          return textArea.value;
+        }
         window.onload = function () {
           var dataPoints1 = [],
             dataPoints2 = [],
@@ -19,7 +24,7 @@
             exportEnabled: true,
             theme: "light2",
             title: {
-              text: "{{asset.asset_name}}".replace("&amp;", "&"),
+              text: decodeHTMLEntities("{{asset.asset_name}}"),
             },
             charts: [
               {
