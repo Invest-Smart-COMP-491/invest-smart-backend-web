@@ -135,12 +135,32 @@ USE_TZ = True
 
 # this defines the url for static files
 # eg: base-url.com/static/your-js-file.js
-STATIC_URL = '/static/'
+
+parent_dir = os.getcwd()
+STATIC_URL = 'static/'
+#STATIC_URL = os.path.join(parent_dir,'static')
 
 # this is directory name where collectstatic files command will put your app level static files
 
-STATIC_ROOT = '/var/www/investsmart/static/'
-#STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+#STATIC_ROOT = '/var/www/investsmart/static/'
+dict_var= "var"
+dict_ww="www"
+dict_static="static"
+path_var=os.path.join(parent_dir, dict_var)
+path_www=os.path.join(path_var, dict_ww)
+path_static=os.path.join(path_www, dict_static)
+
+#STATIC_ROOT = path_static
+
+STATICFILES_DIRS = [
+    # BASE_DIR / "static",
+    os.path.join(os.getcwd(),'static'),
+    os.path.join(os.getcwd(),'static','admin'),
+    os.path.join(os.getcwd(),'static','main'),
+    os.path.join(os.getcwd(),'static','main','js'),
+    os.path.join(os.getcwd(),'static','main','img'),
+    os.path.join(os.getcwd(),'static','rest_framework'),
+]
 
 
 MEDIA_ROOT = '/var/www/investsmart/media/'

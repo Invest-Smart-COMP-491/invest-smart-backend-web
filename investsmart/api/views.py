@@ -286,6 +286,8 @@ class CommentsApiView(APIView):
                 if "parent_comment_id" in request.data:
                     parent_comment_id = request.data["parent_comment_id"]
                     parent_comment=models.Comment.objects.filter(id=parent_comment_id).first()
+                    parent_comment.child_count = parent_comment.child_count+1
+                    parent_comment.save()
                 created_comment = models.Comment(user=user, asset=asset, comment_text=text, parent_comment=parent_comment)
                 created_comment.save()
                 return Response(status=status.HTTP_201_CREATED)
@@ -318,6 +320,11 @@ class CommentsApiView(APIView):
                 user = authToken.user
                 id = request.data["id"]
                 comment = models.Comment.objects.filter(id=id, user=user).first()
+                parent_comment = comment.parent_comment
+                if parent_comment != None:
+                    parent_comment.child_count = parent_comment.child_count-1
+                    parent_comment.save()
+
                 comment.delete()
                 return Response(status=status.HTTP_200_OK)
             except Exception as e:
@@ -408,6 +415,29 @@ class LoginAPI(KnoxLoginView):
         temp_list.data["user"] = serializers.UserSerializer(user, many=False).data
         return Response(temp_list.data)
 
+class RecommendAssetsApiView(APIView):
+    permission_classes = (permissions.AllowAny,)
+    def get(self, request, *args, **kwargs):
+        favouriteAssets = models.FavouriteAsset.objects.none()
+        if 'Authorization' in request.headers.keys():
+            token = request.headers['Authorization'].split(" ")[1][:8]
+            authToken = AuthToken.objects.filter(token_key=token).first()
+            if authToken is not None:
+                favouriteAssets = models.FavouriteAsset.objects.filter(user=authToken.user).all()
+            
+            if len(favouriteAssets) > 0:
+
+                top_n_recommendation = 10 
+                favAssetTickers = [f.asset.asset_ticker for f in favouriteAssets]
+                favouriteCategories = [f.asset.asset_category for f in favouriteAssets]
+                # random top_n_recommendation 
+                recommendedAssets = models.Asset.objects.order_by('?').filter(asset_category__in=favouriteCategories).exclude(asset_ticker__in=favAssetTickers)[:top_n_recommendation]
+
+
+            serializer = serializers.AssetSerializer(recommendedAssets, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)        
+        
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
 
 class FavouriteAssetsApiView(APIView):
     permission_classes = (permissions.AllowAny,)
