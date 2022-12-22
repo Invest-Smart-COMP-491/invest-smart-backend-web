@@ -257,10 +257,17 @@ class AssetsApiView(generics.ListAPIView):
 class CommentsApiView(APIView):
     permission_classes = (permissions.AllowAny,)
     def get(self, request, *args, **kwargs):
-        if len(kwargs) > 0:
-            ticker = kwargs.get('slug')
-            asset = models.Asset.objects.filter(asset_ticker=ticker).first()
-            comments = models.Comment.objects.filter(asset=asset)
+        comments = models.Comment.objects.all()
+        try:
+            if 'comment_id' in request.query_params:
+                comment_id = request.query_params["comment_id"]
+                comment = comments.filter(id=comment_id).first()
+                serializer = serializers.CommentSerializer(comment, many=False)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            if 'asset_ticker' in request.query_params:
+                ticker = request.query_params["asset_ticker"]
+                asset = models.Asset.objects.filter(asset_ticker=ticker).first()
+                comments = comments.filter(asset=asset)
             if 'parent_comment' in request.query_params:
                 parent_comment_id = request.query_params["parent_comment"]
                 if parent_comment_id == '':
@@ -268,15 +275,14 @@ class CommentsApiView(APIView):
                 else:
                     parent_comment = models.Comment.objects.filter(id=parent_comment_id).first()
                     comments = comments.filter(parent_comment=parent_comment)
+            if 'user' in request.query_params:
+                user_id = request.query_params["user"]
+                user = models.CustomUser.objects.filter(id=user_id).first()
+                comments = comments.filter(user=user)
             serializer = serializers.CommentSerializer(comments, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
-        
-
-        # return Response(status=status.HTTP_400_BAD_REQUEST) # TODO: replace below ones with this one 
-
-        comments = models.Comment.objects.all()
-        serializer = serializers.CommentSerializer(comments, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK) 
+        except Exception as e:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
         
         
     def post(self, request):
