@@ -393,7 +393,6 @@ class CommentsLikesApiView(APIView):
         try:
             if 'user' in request.query_params:
                 user_id = request.query_params["user"]
-                user = models.CustomUser.objects.filter(id=user_id).first()
                 comments = comments.filter(liked_users__id=user_id)
             serializer = serializers.CommentSerializer(comments, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -406,8 +405,8 @@ class CommentsLikesApiView(APIView):
                 token = request.headers['Authorization'].split(" ")[1][:8]
                 authToken = AuthToken.objects.filter(token_key=token).first()
                 user = authToken.user
-                if 'comment' in request.query_params:
-                    id = request.query_params["comment"]
+                if 'comment_id' in request.query_params:
+                    id = request.query_params["comment_id"]
                     comment = models.Comment.objects.filter(id=id).first()
                     comment.liked_users.add(user)
                     comment.save()
@@ -424,8 +423,8 @@ class CommentsLikesApiView(APIView):
                 token = request.headers['Authorization'].split(" ")[1][:8]
                 authToken = AuthToken.objects.filter(token_key=token).first()
                 user = authToken.user
-                if 'comment' in request.query_params:
-                    id = request.query_params["comment"]
+                if 'comment_id' in request.query_params:
+                    id = request.query_params["comment_id"]
                     comment = models.Comment.objects.filter(id=id).first()
                     comment.liked_users.remove(user)
                     comment.save()
