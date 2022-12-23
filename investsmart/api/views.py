@@ -385,21 +385,56 @@ class UserApiView(APIView):
     def post(self, request):
         pass
 
-"""
+
 class CommentsLikesApiView(APIView):
     permission_classes = (permissions.AllowAny,)
     def get(self, request, *args, **kwargs):
-        if len(kwargs) > 0:
-            #print(kwargs)
-            comment_id = kwargs.get('slug')
-            commentlikes = CommentLike.objects.get(comment_id=comment_id)
-        else:
-            #commentlikes = models.CommentLike.objects.all() # TODO: do not return all comment, maybe something else can be applied 
-            commentslikes = np.array([])
-        
-        serializer = serializers.CommentLikeSerializer(commentslikes, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-"""
+        comments = models.Comment.objects.all()
+        try:
+            if 'user' in request.query_params:
+                user_id = request.query_params["user"]
+                user = models.CustomUser.objects.filter(id=user_id).first()
+                comments = comments.filter(liked_users__id=user_id)
+            serializer = serializers.CommentSerializer(comments, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self,request,*args, **kwargs):
+        try:
+            if 'Authorization' in request.headers.keys():
+                token = request.headers['Authorization'].split(" ")[1][:8]
+                authToken = AuthToken.objects.filter(token_key=token).first()
+                user = authToken.user
+                if 'comment' in request.query_params:
+                    id = request.query_params["comment"]
+                    comment = models.Comment.objects.filter(id=id).first()
+                    comment.liked_users.add(user)
+                    comment.save()
+                    return Response(status=status.HTTP_200_OK)
+            else:
+                return Response(status=status.HTTP_401_UNAUTHORIZED)
+        except Exception as e:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+    
+
+    def delete(self, request, *args, **kwargs):
+        try:
+            if 'Authorization' in request.headers.keys():
+                token = request.headers['Authorization'].split(" ")[1][:8]
+                authToken = AuthToken.objects.filter(token_key=token).first()
+                user = authToken.user
+                if 'comment' in request.query_params:
+                    id = request.query_params["comment"]
+                    comment = models.Comment.objects.filter(id=id).first()
+                    comment.liked_users.remove(user)
+                    comment.save()
+                    return Response(status=status.HTTP_200_OK)
+            else:
+                return Response(status=status.HTTP_401_UNAUTHORIZED)
+        except Exception as e:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
 
 class RegisterAPI(generics.GenericAPIView):
     permission_classes = (permissions.AllowAny,)
