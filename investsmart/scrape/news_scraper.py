@@ -65,10 +65,10 @@ class NewsScraper:
 
                 results.at[row.Index, 'summary'] = article.summary
 
-                sentiment = self.classifier(article.summary)
+                sentiment = self.classifier(article.summary)[0]
                 results.at[row.Index, 'sentiment'] = sentiment['label']
                 results.at[row.Index, 'sentiment_score'] = sentiment['score']
-                print(sentiment)
+                #print(sentiment)
             except Exception as e:
                 print(f"Couldn't scrape from {row.url}")
 
