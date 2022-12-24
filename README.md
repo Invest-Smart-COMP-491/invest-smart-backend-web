@@ -37,6 +37,6 @@ python -m celery -A investsmart purge <br/>
 
 **Linux:** <br/>
 pkill -f "celery worker" <br/>
-celery -A simpletask worker -l info --logfile=celery.log <br/>
-celery -A simpletask beat -l info --logfile=celery.beat.log <br/>
+celery -A investsmart worker -l info --logfile=celery.log <br/>
+celery -A investsmart beat -l info --logfile=celery.beat.log <br/>
 
