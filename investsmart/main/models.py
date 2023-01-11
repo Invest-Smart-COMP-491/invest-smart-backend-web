@@ -41,6 +41,7 @@ class Asset(models.Model):
 	photo_link = models.URLField(null=True, blank=True) #URLField is needed or CharField is enough? 
 	market_size = models.FloatField(default=0)
 	popularity = models.FloatField(default=0)
+	follower_count = models.IntegerField(default=0)
 
 	def __str__(self):
 		return self.asset_name
@@ -115,7 +116,7 @@ class Comment(models.Model):
 	comment_text = models.TextField()
 	date_time = models.DateTimeField("date published",default=timezone.now)
 	parent_comment = models.ForeignKey("self",on_delete=models.CASCADE,null=True, blank=True) #cascading or keeping comment? 
-	child_count = models.FloatField(default=0)
+	child_count = models.IntegerField(default=0)
 	imported_from = models.CharField(max_length = 200,null=True, blank=True)
 	liked_users = models.ManyToManyField(CustomUser,related_name="liked_users",symmetrical=False,blank=True)
 

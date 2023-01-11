@@ -82,6 +82,9 @@ class UserFavouriteAssetsApiView(APIView):
             favAsset = models.FavouriteAsset(asset=asset,user=user)
             favAsset.save()
 
+            asset.follower_count = models.FavouriteAsset.objects.filter(asset__asset_ticker=asset.asset_ticker).count()
+            asset.save()
+
             serializer= serializers.FavouriteAssetSerializer(data=favAsset)
             if serializer.is_valid():
                 serializer.save()
@@ -98,6 +101,9 @@ class UserFavouriteAssetsApiView(APIView):
             asset_ticker = kwargs.get('slug')
             favouriteAsset = models.FavouriteAsset.objects.filter(asset__asset_ticker=asset_ticker,user=user).first()
             favouriteAsset.delete()
+            asset = models.Asset.objects.filter(asset_ticker=asset_ticker).first()
+            asset.follower_count = models.FavouriteAsset.objects.filter(asset__asset_ticker=asset_ticker).count()
+            asset.save()
             return Response(status=status.HTTP_200_OK)
         
         return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -516,6 +522,8 @@ class FavouriteAssetsApiView(APIView):
                     try:
                         favAsset = models.FavouriteAsset(asset=asset,user=user)
                         favAsset.save()
+                        asset.follower_count = models.FavouriteAsset.objects.filter(asset__asset_ticker=asset.asset_ticker).count()
+                        asset.save()
                         serializer = serializers.FavouriteAssetSerializer(favAsset)
                         return Response(serializer.data, status=status.HTTP_201_CREATED)
                     except Exception as e:
@@ -539,6 +547,8 @@ class FavouriteAssetsApiView(APIView):
                     try:
                         favAsset = models.FavouriteAsset.objects.filter(asset=asset, user=user).first()
                         favAsset.delete()
+                        asset.follower_count = models.FavouriteAsset.objects.filter(asset__asset_ticker=asset.asset_ticker).count()
+                        asset.save()
                         return Response(status=status.HTTP_200_OK)
                     except Exception as e:
                         return Response(status=status.HTTP_400_BAD_REQUEST)

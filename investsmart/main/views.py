@@ -123,6 +123,7 @@ class AssetDetailView(View):
 			asset = models.Asset.objects.filter(asset_ticker=asset_ticker).first()
 			user = request.user
 			favouriteAssetObj = models.FavouriteAsset.objects.get_or_create(user=user,asset=asset)
+			asset.follower_count = models.FavouriteAsset.objects.filter(asset_ticker=asset.asset_ticker).count()
 			asset.save()
 		elif request.POST["action"] == "unfavouriteAsset":
 			response_data = {}
@@ -130,6 +131,7 @@ class AssetDetailView(View):
 			asset = models.Asset.objects.filter(asset_ticker=asset_ticker).first()
 			user = request.user
 			models.FavouriteAsset.objects.filter(user=user,asset=asset).delete()
+			asset.follower_count = models.FavouriteAsset.objects.filter(asset_ticker=asset.asset_ticker).count()
 			asset.save()
 		elif request.POST["action"] == "likeComment":
 			response_data = {}
