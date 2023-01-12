@@ -59,9 +59,14 @@
       #search-results {
         position: absolute;
         top: 70px;
+        left: 510px;
+        background-color: #f3f5fc;
+        max-width: 515px;
+        max-height: 600px;
+        overflow-y: scroll;
         opacity: 1;
         display: block;
-        background-color: #f3f5fc;
+        z-index:10;
       }
     </style>
   </head>
@@ -94,7 +99,7 @@
             class="border-none outline-none bg-transparent w-full"
           />
           <i class="fa-solid fa-magnifying-glass text-gray-400"></i>
-          <div id="search-results" class="border-none outline-none w-full">
+          <div id="search-results" class="py-2 px-4 w-full flex items-center rounded-md" style="visibility: hidden;">
           </div>
         
 
@@ -104,18 +109,24 @@
           searchField.addEventListener("input", function () {
             var searchValue = searchField.value;
             if (searchValue.length > 0) {
+              searchResults.style.visibility = "visible"
               var xhr = new XMLHttpRequest();
               xhr.open("GET", "/api/assets?search=" + searchValue);
               xhr.onload = function () {
                 var response = JSON.parse(xhr.responseText);
                 searchResults.innerHTML = "";
-                for (var i = 0; i < response.length; i++) {
-                  searchResults.innerHTML +=
-                  "<div><a href='/asset/" + response[i].asset_ticker +"'>" + response[i].asset_name + "</a></div>";
+                if(response.length > 0) {
+                  for (var i = 0; i < response.length; i++) {
+                    searchResults.innerHTML += "<div><a href='/asset/" + response[i].asset_ticker +"'>" + response[i].asset_name + "</a></div>";
+                  }
+                }else{
+                  searchResults.innerHTML = "";
+                  searchResults.style.visibility = "hidden"
                 }
               };
             }else {
               searchResults.innerHTML = "";
+              searchResults.style.visibility = "hidden"
             }
             xhr.send();
           });
