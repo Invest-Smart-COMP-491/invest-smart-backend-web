@@ -17,7 +17,7 @@ class NewsScraper:
         self.stock_name = stock_name
         self.stock_ticker = stock_ticker
         self.news_functions = [self.getGoogleNews, self.getGoogleFinanceNews, self.getYahooNews]
-        self.classifier = pipeline("text-classification")
+        self.classifier = pipeline("sentiment-analysis")
 
 
     def CustomFindDate(self,url): 
