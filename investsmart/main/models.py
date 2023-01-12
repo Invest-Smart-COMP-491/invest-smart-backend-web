@@ -103,6 +103,8 @@ class News(models.Model):
 	thumbnail = models.URLField(default=None, null=True)
 	summary = models.TextField(null=True, blank=True)
 	mentioned_assets = models.ManyToManyField(Asset,related_name="mentioned_asset",symmetrical=False,blank=True)
+	sentiment_score = models.FloatField(default=0)
+	sentiment = models.CharField(max_length = 20)
 
 	def __str__(self):
 		return self.title

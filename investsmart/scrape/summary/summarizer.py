@@ -1,5 +1,6 @@
 import requests
 from scrape.api_keys import HUGGING_FACE_KEY
+#from investsmart.scrape.api_keys import HUGGING_FACE_KEY
 
 API_TOKEN = HUGGING_FACE_KEY # organization token
 API_URL = "https://api-inference.huggingface.co/models/facebook/bart-large-cnn"
@@ -14,7 +15,7 @@ class Summarizer:
     def __init__(self):
         pass
 
-    def summarizeNews(self, text):
+    def summarize_news(self, text):
         output = query({
             "inputs": text
         })
