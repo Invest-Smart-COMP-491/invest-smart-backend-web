@@ -5,7 +5,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- Favicon Linkup -->
-    <link rel="shortcut icon" href="static/main/img/logo2.png" type="image/x-icon" />
+    <link
+      rel="shortcut icon"
+      href="static/main/img/logo2.png"
+      type="image/x-icon"
+    />
     <!-- Documes Title -->
     <title>Home</title>
     <!-- Google Fonts Linkup -->
@@ -51,6 +55,14 @@
       .swiper-button-prev {
         left: 0;
       }
+
+      #search-results {
+        position: absolute;
+        top: 70px;
+        opacity: 1;
+        display: block;
+        background-color: #f3f5fc;
+      }
     </style>
   </head>
   <body style="font-family: 'Montserrat', sans-serif">
@@ -77,12 +89,38 @@
           style="background-color: #f3f5fc"
         >
           <input
+            id="search-field"
             type="text"
             class="border-none outline-none bg-transparent w-full"
           />
           <i class="fa-solid fa-magnifying-glass text-gray-400"></i>
-        </div>
+          <div id="search-results" class="border-none outline-none w-full">
+          </div>
+        
 
+        <script>
+          var searchField = document.getElementById("search-field");
+          var searchResults = document.getElementById("search-results");
+          searchField.addEventListener("input", function () {
+            var searchValue = searchField.value;
+            if (searchValue.length > 0) {
+              var xhr = new XMLHttpRequest();
+              xhr.open("GET", "/api/assets?search=" + searchValue);
+              xhr.onload = function () {
+                var response = JSON.parse(xhr.responseText);
+                searchResults.innerHTML = "";
+                for (var i = 0; i < response.length; i++) {
+                  searchResults.innerHTML +=
+                  "<div><a href='/asset/" + response[i].asset_ticker +"'>" + response[i].asset_name + "</a></div>";
+                }
+              };
+            }else {
+              searchResults.innerHTML = "";
+            }
+            xhr.send();
+          });
+        </script>
+        </div>
         <!-- Text -->
         <div class="md:w-full w-3/12 text-end">
           <a href="/download">
@@ -103,15 +141,17 @@
           <div class="slide-content mx-8 md:mx-14 overflow-hidden">
             <div class="card-wrapper swiper-wrapper">
               {% for asset in top_assets %}
-                <!-- Single Box -->
-                <div class="shadow-lg py-3 border rounded-md w-full text-center swiper-slide">
-                  <a href= "asset/{{asset.asset_ticker}}">
-                    <h1 class="text-2xl font-medium">{{asset.asset_ticker}}</h1>
-                    <span class="text-2xl font-medium" style="color: #22b871">
-                      {{asset.last_price|floatformat:2}} USD
-                    </span>
-                  </a>
-                </div>
+              <!-- Single Box -->
+              <div
+                class="shadow-lg py-3 border rounded-md w-full text-center swiper-slide"
+              >
+                <a href="asset/{{asset.asset_ticker}}">
+                  <h1 class="text-2xl font-medium">{{asset.asset_ticker}}</h1>
+                  <span class="text-2xl font-medium" style="color: #22b871">
+                    {{asset.last_price|floatformat:2}} USD
+                  </span>
+                </a>
+              </div>
               {% endfor %}
             </div>
           </div>
@@ -129,18 +169,14 @@
         </h1>
         <div class="overflow-x-hidden overflow-y-scroll h-full mt-4">
           {% for news in top_news %}
-            <!-- Box 1 -->
-            <div class="lg:pr-10 cursor-pointer mt-6">
-              <a href= "{{news.url}}">
-                <h2 class="text-xl font-medium">
-                  {{news.title}}
-                </h2>
-                <span class="text-sm text-gray-500">
-                  {{news.summary}}
-                </span>
-                <hr class="lg:w-[80%] mt-4" />
-              </a>
-            </div>
+          <!-- Box 1 -->
+          <div class="lg:pr-10 cursor-pointer mt-6">
+            <a href="{{news.url}}">
+              <h2 class="text-xl font-medium">{{news.title}}</h2>
+              <span class="text-sm text-gray-500"> {{news.summary}} </span>
+              <hr class="lg:w-[80%] mt-4" />
+            </a>
+          </div>
           {% endfor %}
         </div>
       </div>
