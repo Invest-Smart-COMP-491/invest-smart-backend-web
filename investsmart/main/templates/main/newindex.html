@@ -66,7 +66,7 @@
         overflow-y: scroll;
         opacity: 1;
         display: block;
-        z-index:10;
+        z-index: 10;
       }
     </style>
   </head>
@@ -99,38 +99,45 @@
             class="border-none outline-none bg-transparent w-full"
           />
           <i class="fa-solid fa-magnifying-glass text-gray-400"></i>
-          <div id="search-results" class="py-2 px-4 w-full flex items-center rounded-md" style="visibility: hidden;">
-          </div>
-        
+          <div
+            id="search-results"
+            class="py-2 px-4 w-full flex items-center rounded-md"
+            style="visibility: hidden"
+          ></div>
 
-        <script>
-          var searchField = document.getElementById("search-field");
-          var searchResults = document.getElementById("search-results");
-          searchField.addEventListener("input", function () {
-            var searchValue = searchField.value;
-            if (searchValue.length > 0) {
-              searchResults.style.visibility = "visible"
-              var xhr = new XMLHttpRequest();
-              xhr.open("GET", "/api/assets?search=" + searchValue);
-              xhr.onload = function () {
-                var response = JSON.parse(xhr.responseText);
-                searchResults.innerHTML = "";
-                if(response.length > 0) {
-                  for (var i = 0; i < response.length; i++) {
-                    searchResults.innerHTML += "<div><a href='/asset/" + response[i].asset_ticker +"'>" + response[i].asset_name + "</a></div>";
-                  }
-                }else{
+          <script>
+            var searchField = document.getElementById("search-field");
+            var searchResults = document.getElementById("search-results");
+            searchField.addEventListener("input", function () {
+              var searchValue = searchField.value;
+              if (searchValue.length > 0) {
+                searchResults.style.visibility = "visible";
+                var xhr = new XMLHttpRequest();
+                xhr.open("GET", "/api/assets?search=" + searchValue);
+                xhr.onload = function () {
+                  var response = JSON.parse(xhr.responseText);
                   searchResults.innerHTML = "";
-                  searchResults.style.visibility = "hidden"
-                }
-              };
-            }else {
-              searchResults.innerHTML = "";
-              searchResults.style.visibility = "hidden"
-            }
-            xhr.send();
-          });
-        </script>
+                  if (response.length > 0) {
+                    for (var i = 0; i < response.length; i++) {
+                      searchResults.innerHTML +=
+                        "<div><a href='/asset/" +
+                        response[i].asset_ticker +
+                        "'>" +
+                        response[i].asset_name +
+                        "</a></div>";
+                    }
+                  } else {
+                    searchResults.innerHTML = "";
+                    searchResults.style.visibility = "hidden";
+                  }
+                };
+              } else {
+                searchResults.innerHTML = "";
+                searchResults.style.visibility = "hidden";
+              }
+              xhr.send();
+            });
+          </script>
         </div>
         <!-- Text -->
         <div class="md:w-full w-3/12 text-end">
@@ -183,7 +190,27 @@
           <!-- Box 1 -->
           <div class="lg:pr-10 cursor-pointer mt-6">
             <a href="{{news.url}}">
-              <h2 class="text-xl font-medium">{{news.title}}</h2>
+              <h2 class="text-xl font-medium">
+                <div class="flex">
+                    {{news.title}}
+                    <div
+                      id="sentiment"
+                      class="py-2 px-4 rounded-md text-xs"
+                      {% if news.sentiment == "POSITIVE" %}
+                        style="background-color: rgb(0, 255, 0)"
+                      {% elif news.sentiment == "NEGATIVE" %}
+                        style="background-color: rgb(255, 0, 0)"
+                      {% else %}
+                        style="background-color: rgb(255, 255, 0)"
+                      {% endif %}
+                    >
+                      {{news.sentiment_score|floatformat:2}}
+                    </div>
+                </div>
+              </h2>
+
+
+              
               <span class="text-sm text-gray-500"> {{news.summary}} </span>
               <hr class="lg:w-[80%] mt-4" />
             </a>

@@ -201,7 +201,23 @@
               <!-- Box 1 -->
               <div class="lg:pr-10 cursor-pointer mt-6">
                 <a href="{{news.url}}">
-                  <h2 class="text-xl font-medium">{{news.title}}</h2>
+                  <h2 class="text-xl font-medium">
+                    {{news.title}}
+                    <div
+                      id="sentiment"
+                      class="py-2 px-4 flex items-center rounded-md"
+                      {% if news.sentiment == "POSITIVE" %}
+                        style="background-color: rgb(5, 196, 5)"
+                      {% elif news.sentiment == "NEGATIVE" %}
+                        style="background-color: rgb(255, 0, 0)"
+                      {% else %}
+                        style="background-color: rgb(255, 255, 0)"
+                      {% endif %}
+                    >
+                      {{news.sentiment_score|floatformat:2}}
+                    </div>
+                  </h2>
+                  
                   <span class="text-sm text-gray-500"> {{news.summary}} </span>
                   <hr class="lg:w-[80%] mt-4" />
                 </a>
