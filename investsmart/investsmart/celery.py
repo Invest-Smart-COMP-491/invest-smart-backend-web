@@ -12,7 +12,7 @@ for (stock_name, stock_ticker) in zip(STOCKS_LIST, STOCK_TICKERS_LIST):
     us_sched = {
         'update-news-'+stock_name: {
             'task': 'upload_news',
-            'schedule': 36000.0,
+            'schedule': 3600.0,
             'args': (2, stock_name, stock_ticker)
         },
     }
