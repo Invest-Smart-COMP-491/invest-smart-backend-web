@@ -29,3 +29,5 @@ django_rest_framework
 pytz
 awsebcli
 django-rest-knox
+transformers
+torch

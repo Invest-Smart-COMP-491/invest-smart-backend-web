@@ -8,6 +8,7 @@ from dateutil import parser
 import datetime
 import pytz
 from newspaper import Article
+from transformers import pipeline
 
 scraped_dict = {}
 
@@ -16,6 +17,7 @@ class NewsScraper:
         self.stock_name = stock_name
         self.stock_ticker = stock_ticker
         self.news_functions = [self.getGoogleNews, self.getGoogleFinanceNews, self.getYahooNews]
+        self.classifier = pipeline("sentiment-analysis")
 
 
     def CustomFindDate(self,url): 
@@ -62,6 +64,11 @@ class NewsScraper:
                     results.at[row.Index, 'thumbnail'] = article.top_image
 
                 results.at[row.Index, 'summary'] = article.summary
+
+                sentiment = self.classifier(article.summary)[0]
+                results.at[row.Index, 'sentiment'] = sentiment['label']
+                results.at[row.Index, 'sentiment_score'] = sentiment['score']
+                #print(sentiment)
             except Exception as e:
                 print(f"Couldn't scrape from {row.url}")
 

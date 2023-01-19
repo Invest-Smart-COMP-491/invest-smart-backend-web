@@ -149,7 +149,9 @@ def createandUpdateNews(name, ticker, df_news):
 			publisher =  row['publisher'],
 			asset = asset,
 			thumbnail = row['thumbnail'],
-			summary = row['summary']
+			summary = row['summary'],
+			sentiment_score = row['sentiment_score'],
+			sentiment = row['sentiment'],
 		) for index, row in df_news.iterrows()]
 
 		News.objects.bulk_create(model_instances,ignore_conflicts = True) # update_conflicts=True
